@@ -53,6 +53,12 @@ APT-Casino addresses these problems by offering:
 
 Diverse Game Selection: A variety of fully on-chain games, including roulette, blackjack, plinko, mines and more. As a (POC) Proof of Concept we developed fully on-chain Roulette Game but similar model can be applied to introduce the new casino games to the platform.
 
+EVM Linea Deployed Contract Address: 
+
+APTC Token Contract: https://sepolia.lineascan.build/address/0x9814e85e06d660978e3fc2db1cb12b3ba0367a9e
+
+Roulette Token Contract: https://sepolia.lineascan.build/address/0x5b247c6fbac6171226251ca87d12b2ad1969be11
+
 ## Challenges we ran into
 - Implementing On-Chain Randomness
 Ensuring fair play in the casino games was critical, and implementing on-chain randomness was a significant challenge. We utilized Aptos randomness module: aptos_framework::randomness to achieve provably fair outcomes for our games. This required a deep understanding of the randomness mechanisms and careful integration into our smart contracts.
