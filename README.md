@@ -22,7 +22,7 @@ APT-Casino addresses these problems by offering:
 
 - Provably Fair Gaming: Utilizing the Chainlink VRF and Aptos on-chain randomness module to ensure all game outcomes are transparent and verifiably fair.
 
-- Low Fees: Leveraging the efficiency of Aptos blockchain to minimize transaction costs.
+- Low Fees: Leveraging the efficiency of Linea blockchain to minimize transaction costs.
 
 - Flexible Withdrawal Policies: Providing users with unrestricted access to their funds.
 
@@ -42,8 +42,8 @@ APT-Casino addresses these problems by offering:
 - **APT-Casino** includes a fully functional **European roulette game**.
 - Users can place various types of bets such as **straight, split, street, corner, six line, column, dozen, red, black, high, low, even, and odd.**
 - The **roulette wheel**, powered by **Chainlink VRF and Aptos on-chain randomness module, randomly generates winning values.**
-- Winnings are automatically calculated and transferred to the users' wallets.
-- Cross-Chain Interactions: Seamless asset transfers and interactions between EVM and Aptos blockchain.
+- Winnings are automatically calculated and transferred to the users wallets on Linea Blockchain.
+- Cross-Chain Interactions: Seamless asset transfers and interactions between EVM(Linea) and Aptos blockchain.
 
 ### Lending Aspect:
 - Users can **deposit any tokens on any chain as collateral to borrow in game asset APTC token.**
@@ -55,20 +55,20 @@ Diverse Game Selection: A variety of fully on-chain games, including roulette, b
 
 ## Challenges we ran into
 - Implementing On-Chain Randomness
-Ensuring fair play in the casino games was critical, and implementing on-chain randomness was a significant challenge. We utilized Aptos randomness module: aptos_framework::randomness to achieve provably fair outcomes for our games. This required a deep understanding of the randomness mechanisms and careful integration into our smart contracts. All though the docs provided by the Aptos were super useful.
+Ensuring fair play in the casino games was critical, and implementing on-chain randomness was a significant challenge. We utilized Aptos randomness module: aptos_framework::randomness to achieve provably fair outcomes for our games. This required a deep understanding of the randomness mechanisms and careful integration into our smart contracts.
 - Cost Management: Developing and maintaining our own IPFS server to store NFTs and metadata was a cost-effective solution but required significant initial setup and ongoing maintenance.
 - Cross-Chain Compatibility: Deploying smart contracts across multiple chains and ensuring smooth interoperability was a complex task that demanded thorough testing and troubleshooting.
 - Setting up the DeFi part also posed challenges, as we contemplated creating our own platform token.
 - Time constraints did not allowed us for implementing gasless transactions but we prioritized delivering a functional and reliable platform.
 
 ## Technology Stack
-- Aptos Blockchain: Ensures transparency, security, and efficiency in all transactions and game outcomes.
+- Linea and Aptos Blockchain: Ensures transparency, security, and efficiency in all transactions and game outcomes.
 
 - Chainlink VRF and Aptos On-Chain Randomness Module: Guarantees fair and unbiased game results.
 
 - Cross-Chain Functionality: Enables seamless asset transfers between Aptos and other blockchains.
 
-- Defi Bank: User can stake their tokens on our currently supported chains EVM & Aptos chain and get collateralized loans in form of in game currency APTC.
+- Defi Bank: User can stake their tokens on our currently supported chains EVM(Linea) & Aptos chain and get collateralized loans in form of in game currency APTC.
 
 - Next.js, Javascript, Tailwind CSS, Move, Solidity, Chainlink VRF, Aptos randomness module: aptos_framework::randomness, Petra Wallet, Metamask Wallet.
 
