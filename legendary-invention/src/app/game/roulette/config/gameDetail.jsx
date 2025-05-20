@@ -2,11 +2,9 @@ export const gameData = {
   title: "European Roulette",
   label: "CLASSIC CASINO GAME",
   image: "/images/games/roulette.png",
+  youtube: "https://www.youtube.com/embed/6nKBlWaRI8w?si=qm4t8wyxXRo9O4IK",
   paragraphs: [
     "Welcome to our European Roulette game, where elegance meets excitement! Experience the thrill of the wheel with our provably fair, blockchain-powered roulette game. With a single zero and a house edge of just 2.70%, we offer better odds than traditional casinos. European Roulette features 37 pockets (numbers 0-36), offering better odds than American Roulette. Players bet on where the ball will land after the wheel is spun.",
-    "",
-    "Video Tutorial: How to Play Roulette",
-    "https://www.youtube.com/embed/6nKBlWaRI8w?si=24sWw5ftQ2dpOop8",
   ],
 };
 
