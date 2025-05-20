@@ -21,6 +21,12 @@ module.exports = {
         "dark-pink": "#13020E",
         "purple-magic": "#1F0317",
         "dark-purple": "#090107",
+        // Bitcoin ecosystem colors
+        "bitcoin-orange": "#F7931A",
+        "stacks-purple": "#5546FF",
+        "sbtc-yellow": "#FFB81C",
+        "rebar-blue": "#3B82F6",
+        "exsat-teal": "#00A0B0",
       },
       fontFamily: {
         display: ["ClashDisplay-Variable"],
@@ -42,6 +48,17 @@ module.exports = {
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-20px)' },
+        },
+        // BIP300 animations
+        flowUp: {
+          '0%': { transform: 'translateY(90px) scale(1)' },
+          '50%': { transform: 'translateY(0px) scale(1.5)' },
+          '100%': { transform: 'translateY(-90px) scale(1)' },
+        },
+        flowDown: {
+          '0%': { transform: 'translateY(-90px) scale(1)' },
+          '50%': { transform: 'translateY(0px) scale(1.5)' },
+          '100%': { transform: 'translateY(90px) scale(1)' },
         }
       },
       animation: {
@@ -49,6 +66,8 @@ module.exports = {
         cardHover: 'cardHover 2s ease-in-out infinite',
         chipSpin: 'chipSpin 3s linear infinite',
         float: 'float 3s ease-in-out infinite',
+        'flow-up': 'flowUp 4s infinite',
+        'flow-down': 'flowDown 4s infinite',
       },
     },
   },
