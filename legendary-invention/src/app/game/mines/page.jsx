@@ -10,18 +10,23 @@ import MinesProbability from "./components/MinesProbability.jsx";
 import MinesHistory from "./components/MinesHistory.jsx";
 import { gameData, bettingTableData, gameStatistics, recentBigWins, winProbabilities } from "./config/gameDetail.jsx";
 import { manualFormConfig, autoFormConfig } from "./config/formConfig.jsx";
-import { FaCrown, FaHistory, FaTrophy, FaInfoCircle, FaChartLine, FaFireAlt, FaBomb } from "react-icons/fa";
-import { GiMining, GiDiamonds, GiCardRandom, GiMineExplosion, GiCrystalGrowth } from "react-icons/gi";
+import { FaCrown, FaHistory, FaTrophy, FaInfoCircle, FaChartLine, FaFireAlt, FaBomb, FaDiscord, FaTelegram, FaTwitter, FaDice, FaCoins } from "react-icons/fa";
+import { GiMining, GiDiamonds, GiCardRandom, GiMineExplosion, GiCrystalGrowth, GiChestArmor, GiGoldBar } from "react-icons/gi";
+import { HiLightningBolt, HiOutlineTrendingUp, HiOutlineChartBar } from "react-icons/hi";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 import useWalletStatus from '@/hooks/useWalletStatus';
 import ConnectWalletButton from '@/components/ConnectWalletButton';
+import Image from "next/image";
+import "./mines.css";
 
 export default function Mines() {
   // Game State
   const [betSettings, setBetSettings] = useState({});
   const [activeTab, setActiveTab] = useState("Manual");
   const [gameInstance, setGameInstance] = useState(1); // Force re-render on new game
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [isStatsExpanded, setIsStatsExpanded] = useState(false);
   
   // Wallet connection
   const { isConnected, address } = useWalletStatus();
@@ -31,7 +36,11 @@ export default function Mines() {
   
   // Handle betting form submission
   const handleFormSubmit = (formData) => {
-    const isAutoBetting = activeTab === "Auto";
+    // Determine if using auto betting by checking if the form contains tilesToReveal field
+    // This is more reliable than checking activeTab since it's based on the actual form data
+    const isAutoBetting = formData.hasOwnProperty('tilesToReveal');
+    
+    console.log("Form submitted:", formData, "Auto betting:", isAutoBetting);
     
     // Update bet settings which will be passed to the game component
     setBetSettings({
@@ -80,37 +89,97 @@ export default function Mines() {
                 <GiMineExplosion className="text-3xl text-purple-300" />
               </div>
               <div>
-                <div className="flex items-center gap-2">
-                  <p className="text-sm text-gray-400">Games / Mines</p>
-                  <span className="text-xs px-2 py-0.5 bg-purple-900/30 rounded-full text-purple-300">Popular</span>
-                </div>
-                <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">Mines</h1>
+                <motion.div 
+                  className="flex items-center gap-2"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <p className="text-sm text-gray-400 font-sans">Games / Mines</p>
+                  <span className="text-xs px-2 py-0.5 bg-purple-900/30 rounded-full text-purple-300 font-display">Popular</span>
+                  <span className="text-xs px-2 py-0.5 bg-green-900/30 rounded-full text-green-300 font-display">Live</span>
+                </motion.div>
+                <motion.h1 
+                  className="text-3xl md:text-4xl font-bold font-display bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, delay: 0.1 }}
+                >
+                  Mines
+                </motion.h1>
               </div>
             </div>
-            <p className="text-white/70 mt-2 max-w-xl">
+            <motion.p 
+              className="text-white/70 mt-2 max-w-xl font-sans"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
               Unearth hidden gems while avoiding mines. Higher risk means higher rewards - can you beat the odds?
-            </p>
+            </motion.p>
             
             {/* Game highlights */}
-            <div className="flex flex-wrap gap-4 mt-4">
+            <motion.div 
+              className="flex flex-wrap gap-4 mt-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
               <div className="flex items-center text-sm bg-gradient-to-r from-purple-900/30 to-purple-800/10 px-3 py-1.5 rounded-full">
                 <FaBomb className="mr-1.5 text-red-400" />
-                <span>Up to 25x multiplier</span>
+                <span className="font-sans">Up to 24 mines</span>
               </div>
               <div className="flex items-center text-sm bg-gradient-to-r from-purple-900/30 to-purple-800/10 px-3 py-1.5 rounded-full">
                 <GiDiamonds className="mr-1.5 text-blue-400" />
-                <span>Customizable game grid</span>
+                <span className="font-sans">Customizable game grid</span>
               </div>
               <div className="flex items-center text-sm bg-gradient-to-r from-purple-900/30 to-purple-800/10 px-3 py-1.5 rounded-full">
                 <GiCrystalGrowth className="mr-1.5 text-green-400" />
-                <span>Provably fair gaming</span>
+                <span className="font-sans">Provably fair gaming</span>
               </div>
-            </div>
+            </motion.div>
+            
+            {/* Quick stats */}
+            <motion.div 
+              className="mt-6 flex flex-wrap gap-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <div className="flex items-center">
+                <div className="mr-2 w-8 h-8 rounded-full bg-blue-600/20 flex items-center justify-center">
+                  <FaChartLine className="text-blue-400" />
+                </div>
+                <div>
+                  <div className="text-xs text-white/50 font-sans">Total Bets</div>
+                  <div className="text-white font-display">{gameStatistics.totalBets}</div>
+                </div>
+              </div>
+              
+              <div className="flex items-center">
+                <div className="mr-2 w-8 h-8 rounded-full bg-green-600/20 flex items-center justify-center">
+                  <GiGoldBar className="text-yellow-400" />
+                </div>
+                <div>
+                  <div className="text-xs text-white/50 font-sans">Volume</div>
+                  <div className="text-white font-display">{gameStatistics.totalVolume}</div>
+                </div>
+              </div>
+              
+              <div className="flex items-center">
+                <div className="mr-2 w-8 h-8 rounded-full bg-red-600/20 flex items-center justify-center">
+                  <FaTrophy className="text-yellow-500" />
+                </div>
+                <div>
+                  <div className="text-xs text-white/50 font-sans">Max Win</div>
+                  <div className="text-white font-display">{gameStatistics.maxWin}</div>
+                </div>
+              </div>
+            </motion.div>
           </div>
           
-          {/* Wallet information already shown in navbar */}
         </div>
-        
+
         <div className="w-full h-0.5 bg-gradient-to-r from-purple-600 via-blue-500/30 to-transparent mt-6"></div>
       </div>
     </div>
@@ -119,58 +188,375 @@ export default function Mines() {
   // Main Content Section
   const renderMainContent = () => (
     <div className="flex flex-col lg:flex-row gap-6 px-4 md:px-8 lg:px-20">
-      {/* Sidebar/Tabs */}
-      <div className="w-full lg:w-1/3 xl:w-1/4 space-y-4">
-        <div className="rounded-xl border-2 border-[#333947] bg-[#290023]/50 backdrop-blur-sm p-4">
-          <Tabs tabs={tabs} />
-        </div>
-      </div>
+          {/* Sidebar/Tabs */}
+      <div className="w-full lg:w-1/3 xl:w-1/4 space-y-5">
+        <motion.div 
+          className="rounded-xl border-2 border-purple-700/30 bg-gradient-to-br from-[#290023]/80 to-[#150012]/90 backdrop-blur-sm p-5 shadow-xl shadow-purple-900/20"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Tabs tabs={tabs} onTabChange={handleTabChange} />
+        </motion.div>
+        
+        {/* Big Wins */}
+        <motion.div 
+          className="rounded-xl border-2 border-purple-700/30 bg-gradient-to-br from-[#290023]/80 to-[#150012]/90 backdrop-blur-sm p-5 shadow-xl shadow-purple-900/20"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-white font-bold font-display text-lg flex items-center">
+              <div className="p-2 rounded-full bg-orange-900/30 mr-2 border border-orange-600/20">
+                <FaFireAlt className="text-orange-500" />
+              </div>
+              Recent Big Wins
+            </h3>
+            <div className="px-2 py-1 rounded-full bg-purple-900/30 text-purple-300 text-xs">
+              Live
+            </div>
+          </div>
+          <div className="space-y-3 max-h-72 overflow-y-auto pr-1 custom-scrollbar">
+            {recentBigWins.map((win, index) => (
+              <motion.div 
+                key={index}
+                className="bg-gradient-to-r from-purple-900/20 to-purple-800/10 rounded-lg p-3 border border-purple-800/30 hover:border-purple-700/40 transition-colors"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+              >
+                <div className="flex justify-between items-center">
+                  <div className="text-sm font-medium text-white/90 flex items-center">
+                    <div className="w-6 h-6 rounded-full bg-purple-800/50 flex items-center justify-center mr-2">
+                      <span className="text-xs">{win.player.charAt(0)}</span>
+                    </div>
+                    {win.player}
+                  </div>
+                  <div className="text-xs text-white/60">{win.time}</div>
+                </div>
+                <div className="mt-2 flex justify-between items-center">
+                  <div className="text-green-400 font-bold flex items-center">
+                    <FaCoins className="text-yellow-500 mr-1.5" />
+                    {win.amount}
+                  </div>
+                  <div className="text-xs px-2 py-1 rounded-full bg-red-900/30 text-red-400 border border-red-900/20">
+                    {win.config}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+          </div>
 
-      {/* Game Area */}
-      <div className="w-full lg:w-2/3 xl:w-3/4 rounded-xl border-2 border-[#333947] bg-[#290023]/50 backdrop-blur-sm p-4 md:p-6">
+          {/* Game Area */}
+      <motion.div 
+        className="w-full lg:w-2/3 xl:w-3/4 rounded-xl border-2 border-purple-700/30 bg-gradient-to-br from-[#290023]/80 to-[#150012]/90 backdrop-blur-sm p-6 md:p-8 shadow-xl shadow-purple-900/20 relative overflow-hidden"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-80 h-80 bg-purple-600/10 rounded-full blur-3xl -z-10"></div>
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl -z-10"></div>
+        <div className="absolute top-1/3 left-1/3 w-40 h-40 bg-pink-500/5 rounded-full blur-2xl -z-10 animate-pulse"></div>
+        
         <motion.div 
           key={gameInstance}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
+          className="relative z-10"
         >
           <Game betSettings={betSettings} />
         </motion.div>
-      </div>
+      </motion.div>
     </div>
   );
 
   // Game Info Section
   const renderGameInfo = () => (
     <div className="mt-10 px-4 md:px-8 lg:px-20">
-      <GameDetail 
-        gameData={gameData} 
-        showBettingTable={false}
-        showProbabilities={false}
-      />
+      {/* Enhanced Game Detail */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <GameDetail 
+          gameData={gameData} 
+          showBettingTable={false}
+          showProbabilities={false}
+        />
+      </motion.div>
+      
+      {/* Tutorial Video Modal */}
+      <AnimatePresence>
+        {showTutorial && (
+          <motion.div 
+            className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div 
+              className="bg-gradient-to-br from-purple-900/80 to-[#290023]/90 rounded-xl p-4 w-full max-w-6xl border-2 border-purple-500/30 shadow-xl shadow-purple-900/20"
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-2xl font-bold text-white font-display flex items-center">
+                  <GiMineExplosion className="mr-3 text-purple-400 text-3xl" /> 
+                  How to Play Mines
+                </h3>
+                <button 
+                  onClick={() => setShowTutorial(false)}
+                  className="text-white/70 hover:text-white bg-purple-800/30 p-2 rounded-full hover:bg-purple-700/40 transition-all"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="relative w-full mx-auto bg-black overflow-hidden shadow-lg shadow-purple-900/30" style={{ paddingTop: "56.25%", margin: "-1rem -1rem 0 -1rem", width: "calc(100% + 2rem)" }}>
+                <iframe 
+                  className="absolute top-0 left-0 w-full h-full"
+                  src="https://www.youtube.com/embed/Aqz5C7GPrvQ?si=9F38e0aJvMv1K2PO" 
+                  title="YouTube video player" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" 
+                  allowFullScreen
+                ></iframe>
+              </div>
+              
+              <div className="mt-4 text-white/80 text-sm">
+                <p className="mb-2 font-display text-lg text-white">Quick Tips:</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="bg-purple-900/20 rounded-lg p-3 border border-purple-800/20 flex items-start">
+                    <div className="mr-2 p-2 bg-purple-800/30 rounded-full text-purple-300">
+                      <FaDice className="text-lg" />
+                    </div>
+                    <p>Start with fewer mines to learn the game mechanics</p>
+                  </div>
+                  <div className="bg-purple-900/20 rounded-lg p-3 border border-purple-800/20 flex items-start">
+                    <div className="mr-2 p-2 bg-purple-800/30 rounded-full text-red-300">
+                      <FaBomb className="text-lg" />
+                    </div>
+                    <p>Higher mine counts increase potential rewards but also risk</p>
+                  </div>
+                  <div className="bg-purple-900/20 rounded-lg p-3 border border-purple-800/20 flex items-start">
+                    <div className="mr-2 p-2 bg-purple-800/30 rounded-full text-green-300">
+                      <FaCoins className="text-lg" />
+                    </div>
+                    <p>The cashout button is your friend - don't get too greedy!</p>
+                  </div>
+                  <div className="bg-purple-900/20 rounded-lg p-3 border border-purple-800/20 flex items-start">
+                    <div className="mr-2 p-2 bg-purple-800/30 rounded-full text-blue-300">
+                      <GiCrystalGrowth className="text-lg" />
+                    </div>
+                    <p>Different strategies work for different risk appetites</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-4 flex justify-end">
+                <button 
+                  className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg text-white font-medium hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg shadow-purple-900/20 flex items-center"
+                  onClick={() => setShowTutorial(false)}
+                >
+                  <span>Got it!</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         {typeof MinesBettingTable === 'function' && (
-          <MinesBettingTable bettingTableData={bettingTableData} />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <MinesBettingTable bettingTableData={bettingTableData} />
+          </motion.div>
         )}
         {typeof MinesProbability === 'function' && (
-          <MinesProbability winProbabilities={winProbabilities} />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <MinesProbability winProbabilities={winProbabilities} />
+          </motion.div>
         )}
       </div>
       
-      <div className="mt-6">
+      <motion.div 
+        className="mt-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
         {typeof MinesHistory === 'function' && <MinesHistory />}
-      </div>
-    </div>
+      </motion.div>
+      
+      {/* Strategy Tips Section */}
+      <motion.div 
+        className="mt-8 bg-gradient-to-br from-[#290023]/80 to-[#150012]/90 border-2 border-purple-700/30 rounded-xl p-6 backdrop-blur-sm shadow-xl shadow-purple-900/20"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-bold text-white font-display flex items-center">
+            <GiChestArmor className="mr-2 text-yellow-500" /> 
+            Strategy Guide
+          </h3>
+          <button 
+            onClick={() => setIsStatsExpanded(!isStatsExpanded)}
+            className="text-white/70 hover:text-white"
+          >
+            {isStatsExpanded ? "Show Less" : "Show More"}
+          </button>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-800/20">
+            <h4 className="text-lg font-semibold text-white mb-2 flex items-center font-display">
+              <HiLightningBolt className="mr-2 text-yellow-400" />
+              Beginner Strategy
+            </h4>
+            <p className="text-white/70 text-sm font-sans">
+              Start with 1-3 mines and aim to uncover 5-8 tiles before cashing out. This 
+              offers a good balance of risk and reward while you learn the game.
+            </p>
+          </div>
+          
+          <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-800/20">
+            <h4 className="text-lg font-semibold text-white mb-2 flex items-center font-display">
+              <HiOutlineTrendingUp className="mr-2 text-blue-400" />
+              Risk Management
+            </h4>
+            <p className="text-white/70 text-sm font-sans">
+              Set a target multiplier before starting each game and cash out when you reach it.
+              Consistency is key to long-term success.
+            </p>
+          </div>
+          
+          <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-800/20">
+            <h4 className="text-lg font-semibold text-white mb-2 flex items-center font-display">
+              <HiOutlineChartBar className="mr-2 text-green-400" />
+              Bankroll Management
+            </h4>
+            <p className="text-white/70 text-sm font-sans">
+              Never bet more than 5% of your total bankroll on a single game. This helps 
+              ensure you can recover from losing streaks.
+            </p>
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {isStatsExpanded && (
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-800/20">
+                <h4 className="text-lg font-semibold text-white mb-2 flex items-center font-display">
+                  <FaChartLine className="mr-2 text-blue-400" />
+                  Advanced Pattern Play
+                </h4>
+                <p className="text-white/70 text-sm">
+                  While mines are placed randomly, some players develop personal systems like "edge-first" 
+                  or "center-out" strategies. Remember that each reveal is statistically independent.
+                </p>
+                <ul className="list-disc pl-5 mt-2 text-white/70 text-sm space-y-1">
+                  <li>Edge-first: Reveal tiles along the edges first</li>
+                  <li>Center-out: Start from center and work outward</li>
+                  <li>Diagonal: Reveal tiles in diagonal patterns</li>
+                </ul>
+              </div>
+              
+              <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-800/20">
+                <h4 className="text-lg font-semibold text-white mb-2 flex items-center font-display">
+                  <FaTrophy className="mr-2 text-yellow-500" />
+                  High-Risk Strategies
+                </h4>
+                <p className="text-white/70 text-sm">
+                  For those seeking the biggest wins, playing with 10+ mines can offer enormous 
+                  multipliers. Be aware that these strategies have a high failure rate.
+                </p>
+                <div className="bg-black/30 rounded p-2 mt-2">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="text-white/50">
+                        <th className="text-left">Mines</th>
+                        <th className="text-left">Safe Reveals</th>
+                        <th className="text-right">Potential Multiplier</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-white">
+                      <tr>
+                        <td>10</td>
+                        <td>10</td>
+                        <td className="text-right">71.33x</td>
+                      </tr>
+                      <tr>
+                        <td>15</td>
+                        <td>5</td>
+                        <td className="text-right">23.8x</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+        </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#070005] bg-gradient-to-b from-[#070005] to-[#0e0512] pb-20">
+    <div className="min-h-screen bg-[#070005] bg-gradient-to-b from-[#070005] to-[#0e0512] pb-20 text-white mines-bg custom-scrollbar">
       <div className="pt-32">
         {renderHeader()}
         {renderMainContent()}
         {renderGameInfo()}
       </div>
+
+      
+      {/* Diamond particles container */}
+      <div id="diamond-particles" className="fixed inset-0 pointer-events-none z-0"></div>
+      
+      {/* Customized scrollbar */}
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(75, 30, 150, 0.1);
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(139, 92, 246, 0.3);
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(139, 92, 246, 0.5);
+        }
+      `}</style>
     </div>
   );
-} 
+}

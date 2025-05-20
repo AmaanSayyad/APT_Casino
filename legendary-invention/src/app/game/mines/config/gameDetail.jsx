@@ -7,6 +7,7 @@ export const gameData = {
     "The objective is to uncover gems while avoiding hidden mines. Each successful gem discovery increases your multiplier, and you can cash out anytime. Will you play it safe with a small win or risk everything for a massive payout? In Mines, the choice is entirely yours!",
     "With a dynamic difficulty system, provably fair gameplay, and instant payouts, our Mines game offers an unmatched gaming experience. Set your bet amount, customize your risk level, and step into the thrilling world of strategic crypto gaming.",
   ],
+  youtube: "https://www.youtube.com/embed/Aqz5C7GPrvQ"
 };
 
 export const bettingTableData = {
@@ -73,9 +74,9 @@ export const recentBigWins = [
 ];
 
 export const winProbabilities = [
-  { config: '1 mine (24 safe tiles)', probability: 96.0 },
-  { config: '3 mines (22 safe tiles)', probability: 88.0 },
-  { config: '5 mines (20 safe tiles)', probability: 80.0 },
-  { config: '10 mines (15 safe tiles)', probability: 60.0 },
-  { config: '15 mines (10 safe tiles)', probability: 40.0 }
+  { config: '1 mine (24 safe tiles)', probability: 96.0, color: 'from-green-500 to-green-700' },
+  { config: '3 mines (22 safe tiles)', probability: 88.0, color: 'from-teal-500 to-teal-700' },
+  { config: '5 mines (20 safe tiles)', probability: 80.0, color: 'from-blue-500 to-blue-700' },
+  { config: '10 mines (15 safe tiles)', probability: 60.0, color: 'from-yellow-500 to-yellow-700' },
+  { config: '15 mines (10 safe tiles)', probability: 40.0, color: 'from-red-500 to-red-700' }
 ];

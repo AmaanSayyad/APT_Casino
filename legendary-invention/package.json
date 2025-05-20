@@ -67,6 +67,7 @@
   },
   "devDependencies": {
     "@types/node": "22.15.15",
+    "tailwind-scrollbar": "^3.0.4",
     "typescript": "5.8.3"
   }
 }

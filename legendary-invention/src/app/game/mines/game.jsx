@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { HiOutlineVolumeUp, HiOutlineVolumeOff, HiOutlineInformationCircle } from "react-icons/hi";
-import { FaRegGem, FaBomb, FaDiamond, FaQuestion, FaCoins, FaBullseye, FaClipboardCheck } from "react-icons/fa";
+import { FaRegGem, FaBomb, FaDiamond, FaQuestion, FaCoins, FaBullseye, FaClipboardCheck, FaDice, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { GiMineTruck, GiTreasureMap, GiCrystalGrowth } from "react-icons/gi";
 import Confetti from 'react-confetti';
 import useWindowSize from 'react-use/lib/useWindowSize';
@@ -39,7 +39,6 @@ const Game = ({ betSettings = {} }) => {
   const defaultSettings = {
     betAmount: 50,
     mines: 5,
-    cashoutMultiplier: "Off",
     isAutoBetting: false,
     tilesToReveal: 5,
   };
@@ -87,14 +86,38 @@ const Game = ({ betSettings = {} }) => {
   // Calculate next multiplier based on revealed count
   const calculateNextMultiplier = (revealed) => {
     const nextRevealed = revealed + 1;
+    
+    // Special case for very high mine counts (24 mines in 5x5 grid)
+    if (safeTiles === 1 && nextRevealed === 1) {
+      return 25.00; // Fixed high multiplier for the 1 safe tile
+    }
+    
+    // Allow higher tile reveals for high mine counts
+    const maxReveal = minesCount >= 20 ? safeTiles : 15;
+    if (nextRevealed > maxReveal) return multiplier;
+    
     // Formula: totalTiles / (totalTiles - minesCount - revealed)
-    return parseFloat((totalTiles / (totalTiles - minesCount - nextRevealed)).toFixed(2));
+    // Guard against division by zero or negative numbers
+    const denominator = totalTiles - minesCount - nextRevealed;
+    if (denominator <= 0) return multiplier;
+    
+    return parseFloat((totalTiles / denominator).toFixed(2));
   };
   
   // Calculate chance of hitting a mine
   const calculateMineChance = () => {
-    if (revealedCount >= safeTiles) return 100;
-    return Math.round(minesCount / (totalTiles - revealedCount) * 100);
+    // Edge cases
+    if (revealedCount >= totalTiles) return 0; // All tiles revealed
+    if (revealedCount >= safeTiles) return 100; // All safe tiles revealed, only mines left
+    if (safeTiles <= 0) return 100; // No safe tiles
+    if (minesCount <= 0) return 0; // No mines
+    
+    // Regular case: mines / unrevealed tiles
+    const unrevealedTiles = totalTiles - revealedCount;
+    if (unrevealedTiles <= 0) return 0;
+    
+    const chance = Math.round((minesCount / unrevealedTiles) * 100);
+    return isNaN(chance) ? 0 : chance; // Guard against NaN
   };
   
   // Calculate current payout
@@ -106,9 +129,37 @@ const Game = ({ betSettings = {} }) => {
   const multiplierTable = useMemo(() => {
     const table = [];
     
-    for (let i = 1; i <= safeTiles && i <= 12; i++) {
+    // If we have very few or no safe tiles, show at least one entry
+    if (safeTiles <= 1) {
+      // For edge case with 1 safe tile (e.g., 24 mines in 5x5 grid)
+      if (safeTiles === 1) {
+        // Formula: totalTiles / (totalTiles - minesCount - 1)
+        const denominator = totalTiles - minesCount - 1;
+        if (denominator > 0) {
+          const mult = parseFloat((totalTiles / denominator).toFixed(2));
+          table.push({ tiles: 1, multiplier: mult });
+        } else {
+          // Fallback for impossible math case
+          table.push({ tiles: 1, multiplier: 25.00 });
+        }
+      } else {
+        // No safe tiles case (shouldn't happen, but just in case)
+        table.push({ tiles: 1, multiplier: 1.00 });
+      }
+      return table;
+    }
+    
+    // Show up to 15 tiles, or all safe tiles for high mine counts
+    // For very high mine counts (20+), we'll show all possible safe tiles
+    const maxTiles = minesCount >= 20 ? safeTiles : Math.min(15, safeTiles);
+    
+    for (let i = 1; i <= maxTiles; i++) {
       // Formula: totalTiles / (totalTiles - minesCount - revealed)
-      const mult = parseFloat((totalTiles / (totalTiles - minesCount - i)).toFixed(2));
+      // Make sure we don't divide by zero or negative numbers
+      const denominator = totalTiles - minesCount - i;
+      if (denominator <= 0) break;
+      
+      const mult = parseFloat((totalTiles / denominator).toFixed(2));
       table.push({ tiles: i, multiplier: mult });
     }
     
@@ -126,6 +177,9 @@ const Game = ({ betSettings = {} }) => {
   
   // Initialize the grid
   const initializeGrid = (mines = minesCount) => {
+    // Ensure mines count is valid (never more than totalTiles - 1)
+    const validMines = Math.min(mines, totalTiles - 1);
+    
     let newGrid = Array(gridSize)
       .fill()
       .map(() =>
@@ -141,7 +195,7 @@ const Game = ({ betSettings = {} }) => {
       );
 
     let bombsPlaced = 0;
-    while (bombsPlaced < mines) {
+    while (bombsPlaced < validMines) {
       const row = Math.floor(Math.random() * gridSize);
       const col = Math.floor(Math.random() * gridSize);
       if (!newGrid[row][col].isBomb) {
@@ -167,7 +221,7 @@ const Game = ({ betSettings = {} }) => {
     setGrid(initializeGrid());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   // Reset the game state when gridSize or minesCount changes
   useEffect(() => {
     if (isPlaying) return; // Don't reset while playing
@@ -178,6 +232,13 @@ const Game = ({ betSettings = {} }) => {
     setRevealedCount(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gridSize, minesCount]);
+
+  // Update state when bet settings change
+  useEffect(() => {
+    setMinesCount(settings.mines);
+    setBetAmount(settings.betAmount);
+    setIsAutoBetting(settings.isAutoBetting);
+  }, [settings]);
 
   // Handle cell hover (for desktop)
   const handleCellHover = (row, col, isHovering) => {
@@ -195,38 +256,43 @@ const Game = ({ betSettings = {} }) => {
     if (gameOver || gameWon || !isPlaying || grid[row][col].isRevealed) return;
 
     playSound('click');
-    
+
     const newGrid = [...grid];
     newGrid[row][col].isRevealed = true;
-    
+
     setTimeout(() => {
-      if (grid[row][col].isBomb) {
+    if (grid[row][col].isBomb) {
         playSound('explosion');
-        setGameOver(true);
-        revealAll();
+      setGameOver(true);
+      revealAll();
         toast.error('Game Over! You hit a mine!');
-      } else if (grid[row][col].isDiamond) {
+    } else if (grid[row][col].isDiamond) {
         playSound('gem');
         
         setRevealedCount(prev => {
           const newCount = prev + 1;
-          const newMultiplier = calculateNextMultiplier(prev);
-          setMultiplier(newMultiplier);
-          setProfit(Math.round(betAmount * (newMultiplier - 1)));
+          
+          // Allow higher multipliers for high mine counts
+          const maxTiles = minesCount >= 20 ? safeTiles : 15;
+          if (newCount <= maxTiles) {
+            const newMultiplier = calculateNextMultiplier(prev);
+            setMultiplier(newMultiplier);
+            setProfit(Math.round(betAmount * (newMultiplier - 1)));
+          }
           
           // Check if all safe tiles are revealed
           if (newCount === safeTiles) {
-            setGameWon(true);
-            revealAll();
+          setGameWon(true);
+          revealAll();
             playSound('win');
             setShowConfetti(true);
             toast.success('Congratulations! You revealed all safe tiles!');
             setTimeout(() => setShowConfetti(false), 5000);
-          }
+        }
           
           return newCount;
-        });
-      }
+      });
+    }
     }, 200);
 
     setGrid(newGrid);
@@ -238,11 +304,17 @@ const Game = ({ betSettings = {} }) => {
     
     setAutoRevealInProgress(true);
     
+    // Ensure we have a valid count from settings
+    const tilesToReveal = count || 5; // Default to 5 if undefined
+    
+    // Show more tiles for high mine counts
+    const maxTiles = minesCount >= 20 ? Math.min(safeTiles, tilesToReveal) : Math.min(15, tilesToReveal);
+    
     let revealed = 0;
     let timerIds = [];
     
     const revealNext = () => {
-      if (revealed >= count) {
+      if (revealed >= maxTiles) {
         setAutoRevealInProgress(false);
         cashout();
         return;
@@ -316,11 +388,22 @@ const Game = ({ betSettings = {} }) => {
     setIsPlaying(true);
     setHasPlacedBet(true);
     playSound('bet');
+    
+    // Update state from the latest settings
+    setIsAutoBetting(settings.isAutoBetting);
+    setBetAmount(settings.betAmount);
+    setMinesCount(settings.mines);
+    
     toast.info(`Bet placed: ${betAmount} APTC, ${minesCount} mines`);
     
-    // If auto-betting is enabled, automatically reveal tiles
-    if (isAutoBetting) {
-      setTimeout(() => autoRevealTiles(), 500);
+    // If auto-betting is enabled, automatically reveal tiles after a short delay
+    if (settings.isAutoBetting) {
+      const tilesToReveal = settings.tilesToReveal || 5;
+      toast.info(`Auto betting mode: Will reveal ${tilesToReveal} tiles`);
+      
+      setTimeout(() => {
+        autoRevealTiles(tilesToReveal);
+      }, 800);
     }
   };
   
@@ -364,7 +447,9 @@ const Game = ({ betSettings = {} }) => {
   const adjustMinesCount = (delta) => {
     if (isPlaying) return; // Can't change during gameplay
     
-    const maxMines = Math.floor(totalTiles * 0.8); // Max 80% of tiles can be mines
+    // Always allow up to 24 mines, but never more than totalTiles - 1
+    // This ensures we always have at least 1 safe tile
+    const maxMines = Math.min(24, totalTiles - 1);
     const newCount = Math.max(1, Math.min(maxMines, minesCount + delta));
     setMinesCount(newCount);
   };
@@ -463,15 +548,15 @@ const Game = ({ betSettings = {} }) => {
                     multiplier = totalTiles / (totalTiles - mines - revealedTiles)
                   </p>
                 </div>
-              </div>
-              
+      </div>
+
               <button 
                 className="mt-6 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg text-white font-medium"
                 onClick={toggleGameInfo}
               >
                 Got it!
               </button>
-            </div>
+        </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -489,15 +574,15 @@ const Game = ({ betSettings = {} }) => {
               <HiOutlineVolumeUp className="text-white/70 text-xl" />
             }
           </button>
-          
-          <button 
+
+      <button
             className="p-2 rounded-full bg-blue-900/20 hover:bg-blue-900/40 transition-colors"
             onClick={toggleGameInfo}
             title="Game Info"
-          >
+      >
             <HiOutlineInformationCircle className="text-white/70 text-xl" />
-          </button>
-          
+      </button>
+
           <div className="ml-2 flex items-center">
             <div className="flex items-center gap-2">
               <div className="text-xs md:text-sm text-white/50">
@@ -532,7 +617,7 @@ const Game = ({ betSettings = {} }) => {
             <button 
               className="px-2 py-1 bg-green-900/30 hover:bg-green-900/50 text-white disabled:opacity-50"
               onClick={() => adjustMinesCount(1)}
-              disabled={isPlaying || minesCount >= Math.floor(totalTiles * 0.8)}
+              disabled={isPlaying || minesCount >= Math.min(totalTiles - 1, 24)}
             >
               +
             </button>
@@ -610,9 +695,10 @@ const Game = ({ betSettings = {} }) => {
         {!hasPlacedBet ? (
           <button
             onClick={placeBet}
-            className="w-full py-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg text-white font-bold shadow-lg hover:from-purple-700 hover:to-blue-700 transition-all"
+            className="w-full py-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg text-white font-bold shadow-lg hover:from-purple-700 hover:to-blue-700 transition-all flex items-center justify-center gap-2"
           >
-            Place Bet ({betAmount} APTC)
+            <FaCoins className="text-yellow-300" />
+            <span>PLACE BET ({betAmount} APTC)</span>
           </button>
         ) : (
           <div className="flex gap-3">
@@ -623,16 +709,18 @@ const Game = ({ betSettings = {} }) => {
                 isPlaying && revealedCount > 0 
                   ? 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700' 
                   : 'bg-gray-700 cursor-not-allowed'
-              } rounded-lg text-white font-bold shadow-lg transition-all`}
+              } rounded-lg text-white font-bold shadow-lg transition-all flex items-center justify-center gap-2`}
             >
-              Cash Out ({calculatePayout()} APTC)
+              <FaCoins className="text-yellow-300" />
+              <span>CASH OUT ({calculatePayout()} APTC)</span>
             </button>
             
             <button
               onClick={resetGame}
-              className="flex-1 py-3 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg text-white font-bold shadow-lg hover:from-red-700 hover:to-orange-700 transition-all"
+              className="flex-1 py-3 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg text-white font-bold shadow-lg hover:from-red-700 hover:to-orange-700 transition-all flex items-center justify-center gap-2"
             >
-              New Game
+              <FaDice className="text-white" />
+              <span>NEW GAME</span>
             </button>
           </div>
         )}
@@ -657,21 +745,46 @@ const Game = ({ betSettings = {} }) => {
           <GiCrystalGrowth className="mr-2 text-blue-400" /> 
           Multiplier Table
         </h3>
-        <div className="overflow-x-auto">
-          <div className="flex gap-2 pb-2">
-            {multiplierTable.map((item, index) => (
-              <div 
-                key={index}
-                className={`min-w-16 p-2 text-center rounded ${
-                  item.tiles === revealedCount 
-                    ? 'bg-purple-600 text-white' 
-                    : 'bg-gray-800/50 text-white/70'
-                }`}
-              >
-                <div className="text-xs">{item.tiles} Tiles</div>
-                <div className="text-sm font-semibold">{item.multiplier.toFixed(2)}x</div>
+        <div className="relative">
+          {/* Scrollable multiplier table with improved styling and indicators */}
+          <div className="bg-black/40 p-4 rounded-xl border border-gray-700/60 shadow-lg">
+            {/* Shadow indicators with arrow icons for better UX */}
+            <div className="absolute left-0 top-0 bottom-0 w-10 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none flex items-center justify-center">
+              <FaArrowLeft className="text-purple-400 ml-2" />
+            </div>
+            <div className="absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none flex items-center justify-center">
+              <FaArrowRight className="text-purple-400 mr-2" />
+            </div>
+            
+            <div className="overflow-x-auto pb-1">
+              <div className="flex gap-3 min-w-max">
+                {multiplierTable.map((item, index) => (
+                  <div 
+                    key={index}
+                    className={`min-w-[95px] p-2.5 text-center rounded-lg ${
+                      item.tiles === revealedCount 
+                        ? 'bg-gradient-to-br from-purple-700 to-purple-600 text-white font-bold shadow-lg shadow-purple-700/50 border-2 border-purple-500/80' 
+                        : 'bg-gradient-to-br from-gray-800/90 to-gray-900/90 text-white/90 hover:bg-gray-700/90 transition-colors shadow-md border border-gray-700/50'
+                    }`}
+                  >
+                    <div className="text-xs font-medium mb-1">{item.tiles} Tiles</div>
+                    <div className="text-xl font-semibold">{item.multiplier.toFixed(2)}x</div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+            
+            {safeTiles === 1 ? (
+              <div className="text-xs text-center text-yellow-400 font-medium mt-3">
+                Only 1 safe tile with a 25.00x multiplier!
+              </div>
+            ) : multiplierTable.length > 6 && (
+              <div className="text-xs text-center text-white/80 mt-3 flex items-center justify-center gap-2">
+                <FaArrowLeft className="text-purple-400" />
+                <span>Swipe to see more multipliers</span>
+                <FaArrowRight className="text-purple-400" />
+              </div>
+            )}
           </div>
         </div>
       </div>

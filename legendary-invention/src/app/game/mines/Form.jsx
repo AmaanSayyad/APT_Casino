@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaArrowRight, FaCoins, FaBomb, FaDice, FaCog, FaExchangeAlt, FaTimes, FaAngleUp, FaAngleDown } from "react-icons/fa";
+import { FaArrowRight, FaCoins, FaBomb, FaDice, FaCog, FaExchangeAlt, FaTimes, FaAngleUp, FaAngleDown, FaInfoCircle } from "react-icons/fa";
 import CustomSelect from "@/components/CustomSelect";
 import CustomInput from "@/components/CustomInput";
 import { motion } from "framer-motion";
@@ -205,13 +205,40 @@ const DynamicForm = ({ config, onSubmit }) => {
           <motion.button
             type="submit"
             onClick={handleSubmit}
-            className="w-full py-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg text-white font-semibold shadow-lg hover:from-purple-700 hover:to-blue-700 transition-all flex items-center justify-center space-x-2"
+            className={`w-full py-3 ${
+              isAutoMode 
+                ? 'bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700' 
+                : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
+            } rounded-lg text-white font-semibold shadow-lg transition-all flex items-center justify-center`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <span>{config.submitButton || "Submit"}</span>
-            <FaArrowRight />
+            {isAutoMode && (
+              <span className="inline-flex items-center mr-2">🤖</span>
+            )}
+            <span>{isAutoMode ? "START AUTO BETTING" : "PLACE BET"}</span>
+            <FaArrowRight className="ml-2" />
           </motion.button>
+          
+          {/* How to Play Info */}
+          <div className="mt-2 p-3 bg-black/20 rounded-lg">
+            <div className="text-xs text-white/60 flex items-start">
+              <FaInfoCircle className="text-blue-400 mt-0.5 mr-2 flex-shrink-0" />
+              <div>
+                {isAutoMode ? (
+                  <span>
+                    <strong>Auto Mode:</strong> Set mines, bet amount, and number of tiles to reveal. 
+                    The system will automatically place bets and cash out according to your settings.
+                  </span>
+                ) : (
+                  <span>
+                    <strong>Manual Mode:</strong> Set mines and bet amount, then click tiles yourself to reveal gems.
+                    You control when to cash out your winnings.
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
         </form>
       )}
     </motion.div>

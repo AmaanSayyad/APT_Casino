@@ -1,6 +1,7 @@
 import HeaderText from "@/components/HeaderText";
 import GameCarousel from "@/components/GameCarousel";
 import MostPlayed from "@/components/MostPlayed";
+import GameStats from "@/components/GameStats";
 
 export default function Page() {
   return (
