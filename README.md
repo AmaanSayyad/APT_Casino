@@ -13,6 +13,7 @@ That question became APT-Casino — a Bitcoin-native GambleFi platform that prio
 ---
 
 ## 🧠 What We Built
+![image](https://github.com/user-attachments/assets/5abfac34-c6de-45bf-9561-762552abdd8e)
 
 APT-Casino is a decentralized casino dApp that currently supports **Roulette** and **Mines**, with full on-chain game logic, real-time bet resolution, and Bitcoin-backed settlement.
 
@@ -94,6 +95,11 @@ Our provably fair system ensures complete transparency:
 3. **HMAC-SHA256**: Combines seeds to generate verifiable random outcomes
 4. **On-chain Verification**: All game results recorded on the Bitcoin network
 5. **Auditable History**: Players can verify past games using our verification tool
+
+
+![image](https://github.com/user-attachments/assets/64b93931-9446-4a13-b794-86aa6ffb1c59)
+
+![image](https://github.com/user-attachments/assets/8c7a87c6-318d-44e6-a273-256736caa8d4)
 
 ---
 
