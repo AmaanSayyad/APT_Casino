@@ -30,7 +30,7 @@ const HowItWorksSection = () => {
     {
       id: 2,
       title: 'Get APTC Tokens',
-      description: 'Power your gameplay with APTC tokens – our exclusive in-game currency built on Mantle Network. Easily swap from any token or other cryptocurrencies.',
+      description: 'Power your gameplay with APTC tokens – our exclusive in-game currency built on Bitcoin Supported Network. Easily swap from any token or other cryptocurrencies.',
       emoji: '💰'
     },
     {
