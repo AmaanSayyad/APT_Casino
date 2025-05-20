@@ -10,9 +10,9 @@ import MinesProbability from "./components/MinesProbability.jsx";
 import MinesHistory from "./components/MinesHistory.jsx";
 import MinesLeaderboard from "./components/MinesLeaderboard.jsx";
 import MinesStrategyGuide from "./components/MinesStrategyGuide.jsx";
-import { gameData, bettingTableData, gameStatistics, winProbabilities } from "./config/gameDetail.jsx";
+import { gameData, bettingTableData, gameStatistics, recentBigWins, winProbabilities } from "./config/gameDetail.jsx";
 import { manualFormConfig, autoFormConfig } from "./config/formConfig.jsx";
-import { FaCrown, FaHistory, FaTrophy, FaInfoCircle, FaChartLine, FaBomb, FaDiscord, FaTelegram, FaTwitter, FaDice, FaCoins, FaChevronDown } from "react-icons/fa";
+import { FaCrown, FaHistory, FaTrophy, FaInfoCircle, FaChartLine, FaFireAlt, FaBomb, FaDiscord, FaTelegram, FaTwitter, FaDice, FaCoins, FaChevronDown } from "react-icons/fa";
 import { GiMining, GiDiamonds, GiCardRandom, GiMineExplosion, GiCrystalGrowth, GiChestArmor, GiGoldBar } from "react-icons/gi";
 import { HiLightningBolt, HiOutlineTrendingUp, HiOutlineChartBar } from "react-icons/hi";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,8 +22,6 @@ import ConnectWalletButton from '@/components/ConnectWalletButton';
 import Image from "next/image";
 import "./mines.css";
 import GameDetail from "@/components/GameDetail";
-import AIAutoBetting from "./components/AIAutoBetting";
-import AISettingsModal from "./components/AISettingsModal";
 
 export default function Mines() {
   // Game State
@@ -33,85 +31,14 @@ export default function Mines() {
   const [showTutorial, setShowTutorial] = useState(false);
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
   
-  // AI Auto Betting State
-  const [isAIActive, setIsAIActive] = useState(false);
-  const [showAISettings, setShowAISettings] = useState(false);
-  const [aiSettings, setAISettings] = useState({
-    strategy: 'balanced',
-    maxBet: 100,
-    stopLoss: 500,
-    targetProfit: 1000,
-    riskFactors: {
-      adaptToHistory: true,
-      maxConsecutiveLosses: 3,
-      increaseOnWin: false,
-      decreaseOnLoss: true
-    },
-    tiles: {
-      min: 3,
-      max: 8
-    },
-    mines: {
-      min: 3,
-      max: 10
-    }
-  });
-  
   // Wallet connection
   const { isConnected, address } = useWalletStatus();
   
   // Theme
   const { theme } = useTheme();
   
-  // Handle AI activation/deactivation
-  const handleAIToggle = () => {
-    if (!isAIActive) {
-      // When activating AI, generate some random settings based on AI strategy
-      const { strategy, tiles, mines } = aiSettings;
-      
-      // Choose random mines count within AI settings range
-      const minesCount = Math.floor(Math.random() * (mines.max - mines.min + 1)) + mines.min;
-      
-      // Choose random tiles to reveal within AI settings range
-      const tilesToReveal = Math.floor(Math.random() * (tiles.max - tiles.min + 1)) + tiles.min;
-      
-      // Generate a random bet amount based on strategy
-      let betAmount = 50; // default
-      if (strategy === 'conservative') {
-        betAmount = [10, 25, 50][Math.floor(Math.random() * 3)];
-      } else if (strategy === 'balanced') {
-        betAmount = [50, 100, 250][Math.floor(Math.random() * 3)];
-      } else if (strategy === 'aggressive') {
-        betAmount = [100, 250, 500][Math.floor(Math.random() * 3)];
-      }
-      
-      // Create AI auto betting settings
-      const aiAutoSettings = {
-        betAmount,
-        mines: minesCount,
-        tilesToReveal,
-        isAutoBetting: true,
-        aiAssist: true // Add aiAssist flag to trigger AI behavior
-      };
-      
-      // Update bet settings to activate auto betting
-      setBetSettings(aiAutoSettings);
-      
-      // Force game component to re-render with new settings
-      setGameInstance(prev => prev + 1);
-    }
-    
-    // Toggle AI active state
-    setIsAIActive(!isAIActive);
-  };
-  
   // Handle betting form submission
   const handleFormSubmit = (formData) => {
-    // Disable AI if manual form is submitted
-    if (isAIActive) {
-      setIsAIActive(false);
-    }
-    
     // Determine if using auto betting by checking if the form contains tilesToReveal field
     // This is more reliable than checking activeTab since it's based on the actual form data
     const isAutoBetting = formData.hasOwnProperty('tilesToReveal');
@@ -126,44 +53,6 @@ export default function Mines() {
     
     // Force game component to re-render with new settings
     setGameInstance(prev => prev + 1);
-  };
-
-  // Handle AI settings save
-  const handleAISettingsSave = (newSettings) => {
-    setAISettings(newSettings);
-    
-    // If AI is currently active, update the game with new settings
-    if (isAIActive) {
-      const { strategy, tiles, mines } = newSettings;
-      
-      // Choose random mines count within AI settings range
-      const minesCount = Math.floor(Math.random() * (mines.max - mines.min + 1)) + mines.min;
-      
-      // Choose random tiles to reveal within AI settings range
-      const tilesToReveal = Math.floor(Math.random() * (tiles.max - tiles.min + 1)) + tiles.min;
-      
-      // Generate a random bet amount based on strategy
-      let betAmount = 50; // default
-      if (strategy === 'conservative') {
-        betAmount = [10, 25, 50][Math.floor(Math.random() * 3)];
-      } else if (strategy === 'balanced') {
-        betAmount = [50, 100, 250][Math.floor(Math.random() * 3)];
-      } else if (strategy === 'aggressive') {
-        betAmount = [100, 250, 500][Math.floor(Math.random() * 3)];
-      }
-      
-      // Update bet settings
-      setBetSettings({
-        betAmount,
-        mines: minesCount,
-        tilesToReveal,
-        isAutoBetting: true,
-        aiAssist: true // Add aiAssist flag to trigger AI behavior
-      });
-      
-      // Force game component to re-render with new settings
-      setGameInstance(prev => prev + 1);
-    }
   };
 
   // Tab configuration - memoized to prevent unnecessary re-renders
@@ -206,7 +95,7 @@ export default function Mines() {
       <div className="absolute -bottom-20 left-1/4 w-48 h-48 bg-pink-500/5 rounded-full blur-3xl"></div>
       
       <div className="relative">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6">
           {/* Left Column - Game Info */}
           <div className="md:w-3/4">
             <div className="flex items-center">
@@ -340,9 +229,9 @@ export default function Mines() {
 
   // Main Content Section
   const renderMainContent = () => (
-    <div className="flex flex-col lg:flex-row gap-4 px-4 md:px-8 lg:px-20">
+    <div className="flex flex-col lg:flex-row gap-6 px-4 md:px-8 lg:px-20">
           {/* Sidebar/Tabs */}
-      <div className="w-full lg:w-1/3 xl:w-1/4">
+      <div className="w-full lg:w-1/3 xl:w-1/4 space-y-5">
         <motion.div 
           className="rounded-xl border-2 border-purple-700/30 bg-gradient-to-br from-[#290023]/80 to-[#150012]/90 backdrop-blur-sm p-5 shadow-xl shadow-purple-900/20"
           initial={{ opacity: 0, x: -20 }}
@@ -351,9 +240,59 @@ export default function Mines() {
         >
           <Tabs tabs={tabs} onTabChange={handleTabChange} />
         </motion.div>
-      </div>
+        
+        {/* Big Wins */}
+        <motion.div 
+          className="rounded-xl border-2 border-purple-700/30 bg-gradient-to-br from-[#290023]/80 to-[#150012]/90 backdrop-blur-sm p-5 shadow-xl shadow-purple-900/20"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-white font-bold font-display text-lg flex items-center">
+              <div className="p-2 rounded-full bg-orange-900/30 mr-2 border border-orange-600/20">
+                <FaFireAlt className="text-orange-500" />
+              </div>
+              Recent Big Wins
+            </h3>
+            <div className="px-2 py-1 rounded-full bg-purple-900/30 text-purple-300 text-xs">
+              Live
+            </div>
+          </div>
+          <div className="space-y-3 max-h-72 overflow-y-auto pr-1 custom-scrollbar">
+            {recentBigWins.map((win, index) => (
+              <motion.div 
+                key={index}
+                className="bg-gradient-to-r from-purple-900/20 to-purple-800/10 rounded-lg p-3 border border-purple-800/30 hover:border-purple-700/40 transition-colors"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+              >
+                <div className="flex justify-between items-center">
+                  <div className="text-sm font-medium text-white/90 flex items-center">
+                    <div className="w-6 h-6 rounded-full bg-purple-800/50 flex items-center justify-center mr-2">
+                      <span className="text-xs">{win.player.charAt(0)}</span>
+                    </div>
+                    {win.player}
+                  </div>
+                  <div className="text-xs text-white/60">{win.time}</div>
+                </div>
+                <div className="mt-2 flex justify-between items-center">
+                  <div className="text-green-400 font-bold flex items-center">
+                    <FaCoins className="text-yellow-500 mr-1.5" />
+                    {win.amount}
+                  </div>
+                  <div className="text-xs px-2 py-1 rounded-full bg-red-900/30 text-red-400 border border-red-900/20">
+                    {win.config}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+          </div>
 
-      {/* Game Area */}
+          {/* Game Area */}
       <motion.div 
         className="w-full lg:w-2/3 xl:w-3/4 rounded-xl border-2 border-purple-700/30 bg-gradient-to-br from-[#290023]/80 to-[#150012]/90 backdrop-blur-sm p-6 md:p-8 shadow-xl shadow-purple-900/20 relative overflow-hidden"
         initial={{ opacity: 0, y: 20 }}
@@ -421,7 +360,7 @@ export default function Mines() {
                 </button>
               </div>
               
-              <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex flex-col md:flex-row gap-6">
                 <div className="md:w-3/4">
                   <div className="relative w-full bg-black rounded-lg overflow-hidden shadow-lg shadow-purple-900/30 border border-purple-600/20" style={{ paddingTop: "56.25%" }}>
                     <iframe 
@@ -436,9 +375,9 @@ export default function Mines() {
                   </div>
                 </div>
                 
-                <div className="md:w-1/4">
+                <div className="md:w-3/4">
                   <div className="text-white/80 text-sm h-full flex flex-col">
-                    <p className="font-display text-lg text-white mb-3">Mines</p>
+                    <p className="font-display text-lg text-white mb-3"> Mines</p>
                     <div className="space-y-3 pr-1">
                       <p>Select mines on a 5x5 grid – more mines mean higher rewards but greater risk.</p>
                       
@@ -466,7 +405,7 @@ export default function Mines() {
         )}
       </AnimatePresence>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         {typeof MinesBettingTable === 'function' && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -811,7 +750,17 @@ export default function Mines() {
           )}
         </AnimatePresence>
         
-        
+        {/* Play now button */}
+        <div className="mt-6 flex justify-center">
+          <motion.button
+            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg text-white font-medium text-sm shadow-lg shadow-purple-900/30 flex items-center gap-2 hover:shadow-xl hover:shadow-purple-900/40 transition-all"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <GiDiamonds className="text-yellow-300" />
+            <span>Apply These Strategies</span>
+          </motion.button>
+        </div>
       </motion.div>
         </div>
   );
@@ -826,20 +775,6 @@ export default function Mines() {
         {renderGameInfo()}
       </div>
 
-      {/* AI Auto Betting Panel */}
-      <AIAutoBetting 
-        isActive={isAIActive} 
-        onActivate={handleAIToggle}
-        onSettings={() => setShowAISettings(true)} 
-      />
-      
-      {/* AI Settings Modal */}
-      <AISettingsModal
-        isOpen={showAISettings}
-        onClose={() => setShowAISettings(false)}
-        onSave={handleAISettingsSave}
-        currentSettings={aiSettings}
-      />
       
       {/* Diamond particles container */}
       <div id="diamond-particles" className="fixed inset-0 pointer-events-none z-0"></div>

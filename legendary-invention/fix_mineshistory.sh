@@ -1,3 +1,6 @@
+#!/bin/bash
+
+cat > src/app/game/mines/components/MinesHistory.jsx << 'EOF'
 "use client";
 
 import React, { useState } from "react";
@@ -322,3 +325,4 @@ const MinesHistory = ({ gameHistory = [], userStats = {} }) => {
 };
 
 export default MinesHistory;
+EOF

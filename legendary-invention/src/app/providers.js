@@ -54,8 +54,11 @@ const pharosDevnet = {
 };
 
 // Hardcoded project ID as a fallback
-const fallbackProjectId = "64df6621925fa7d0680ba510ac3788df";
+const fallbackProjectId = "3a8170812b534d0ff9d794f19a901d64";
 const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || fallbackProjectId;
+
+// Log the project ID for debugging (will remove in production)
+console.log("Using WalletConnect Project ID:", projectId);
 
 // Create wagmi config
 const config = getDefaultConfig({

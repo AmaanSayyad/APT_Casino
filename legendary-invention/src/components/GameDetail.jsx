@@ -107,20 +107,6 @@ const YouTubeVideo = ({ videoUrl }) => {
           zIndex: 2
         }}
       >
-        <Typography 
-          variant="h6" 
-          sx={{ 
-            color: 'white', 
-            fontWeight: 'bold',
-            textShadow: '0 2px 4px rgba(0,0,0,0.5)',
-            letterSpacing: '1px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1
-          }}
-        >
-          <FaPlayCircle /> Roulette Masterclass
-        </Typography>
       </Box>
       <iframe
         style={{

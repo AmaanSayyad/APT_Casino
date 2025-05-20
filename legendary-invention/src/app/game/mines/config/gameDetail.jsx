@@ -2,12 +2,13 @@ export const gameData = {
   label: "Game Description",
   title: "Mines",
   image: "/images/games/mines.png",
+  description: "Unearth hidden gems while avoiding mines in this thrilling crypto game!",
+  youtube: "https://www.youtube.com/embed/Aqz5C7GPrvQ?si=XZlr0I0rGt9CtuHW",
   paragraphs: [
-    "APT Casino's Mines is an exhilarating crypto game where every decision matters. Players begin by selecting the number of mines to place on a 5x5 grid – the more mines you choose, the higher the potential reward but the greater the risk.",
-    "The objective is to uncover gems while avoiding hidden mines. Each successful gem discovery increases your multiplier, and you can cash out anytime. Will you play it safe with a small win or risk everything for a massive payout? In Mines, the choice is entirely yours!",
-    "With a dynamic difficulty system, provably fair gameplay, and instant payouts, our Mines game offers an unmatched gaming experience. Set your bet amount, customize your risk level, and step into the thrilling world of strategic crypto gaming.",
+    "Select mines on a 5x5 grid – more mines mean higher rewards but greater risk.",
+    "Uncover gems while avoiding mines to increase your multiplier. Cash out anytime or keep going for bigger rewards.",
+    "With provably fair gameplay and instant payouts, Mines offers the perfect blend of strategy and luck.",
   ],
-  youtube: "https://www.youtube.com/embed/Aqz5C7GPrvQ"
 };
 
 export const bettingTableData = {

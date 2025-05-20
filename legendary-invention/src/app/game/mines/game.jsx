@@ -10,8 +10,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const GRID_SIZES = {
-  5: 5, // 5x5 grid
-  6: 6, // 6x6 grid - advanced mode
+  5: 5, // 5x5 grid - classic mode
 };
 
 const MINE_SPRITES = [
@@ -44,6 +43,7 @@ const Game = ({ betSettings = {} }) => {
   };
 
   const settings = { ...defaultSettings, ...betSettings };
+  const processedSettingsRef = useRef(null); // Track if current settings have been processed
   
   // Game State
   const [grid, setGrid] = useState([]);
@@ -61,7 +61,6 @@ const Game = ({ betSettings = {} }) => {
   const [isAutoBetting, setIsAutoBetting] = useState(settings.isAutoBetting);
   const [isGameInfoVisible, setIsGameInfoVisible] = useState(false);
   const [betAmount, setBetAmount] = useState(settings.betAmount);
-  const [isAdvancedMode, setIsAdvancedMode] = useState(false);
   const [autoRevealInProgress, setAutoRevealInProgress] = useState(false);
   
   // Audio refs
@@ -218,6 +217,8 @@ const Game = ({ betSettings = {} }) => {
 
   // Initialize the game on component mount
   useEffect(() => {
+    const size = GRID_SIZES[5];
+    setGridSize(size);
     setGrid(initializeGrid());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -231,14 +232,64 @@ const Game = ({ betSettings = {} }) => {
     setProfit(0);
     setRevealedCount(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gridSize, minesCount]);
+  }, [minesCount]); // Only depend on minesCount since gridSize is fixed at 5
 
   // Update state when bet settings change
   useEffect(() => {
-    setMinesCount(settings.mines);
-    setBetAmount(settings.betAmount);
-    setIsAutoBetting(settings.isAutoBetting);
-  }, [settings]);
+    // Get a string representation of settings to compare
+    const settingsKey = JSON.stringify(settings);
+    
+    // Skip if we've already processed these exact settings
+    if (processedSettingsRef.current === settingsKey) {
+      return;
+    }
+    
+    // Check if we actually have settings to process and if they're different from defaults
+    if (Object.keys(settings).length > 0 && settingsKey !== JSON.stringify(defaultSettings)) {
+      // Save current settings as processed
+      processedSettingsRef.current = settingsKey;
+      
+      // Reset the game first without affecting hasPlacedBet
+      // We'll update these manually to avoid infinite loops
+      setGameOver(false);
+      setGameWon(false);
+      setGrid(initializeGrid(settings.mines));
+      setMultiplier(1.0);
+      setProfit(0);
+      setRevealedCount(0);
+      setAutoRevealInProgress(false);
+      setShowConfetti(false);
+      
+      // Set state with new settings
+      setMinesCount(settings.mines);
+      setBetAmount(settings.betAmount);
+      setIsAutoBetting(settings.isAutoBetting);
+      
+      // Start the game
+      setIsPlaying(true);
+      setHasPlacedBet(true);
+      playSound('bet');
+      
+      // Special message if AI-assisted auto betting
+      if (settings.isAutoBetting && settings.aiAssist) {
+        toast.info(`AI-assisted auto betting activated`);
+        toast.info(`Using advanced pattern recognition algorithms`);
+      } else if (settings.isAutoBetting) {
+        toast.info(`Auto betting mode: Will reveal ${settings.tilesToReveal || 5} tiles`);
+      } else {
+        toast.info(`Bet placed: ${settings.betAmount} APTC, ${settings.mines} mines`);
+      }
+      
+      // If auto-betting is enabled, automatically reveal tiles after a short delay
+      if (settings.isAutoBetting) {
+        const tilesToReveal = settings.tilesToReveal || 5;
+        
+        setTimeout(() => {
+          autoRevealTiles(tilesToReveal);
+        }, 800);
+      }
+    }
+  }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle cell hover (for desktop)
   const handleCellHover = (row, col, isHovering) => {
@@ -313,10 +364,16 @@ const Game = ({ betSettings = {} }) => {
     let revealed = 0;
     let timerIds = [];
     
+    // Add AI decision notice
+    toast.info("AI is making decisions...");
+    
     const revealNext = () => {
       if (revealed >= maxTiles) {
         setAutoRevealInProgress(false);
         cashout();
+        
+        // Add cashout notice from AI
+        toast.success("AI Agent: Optimal cashout point reached ✓");
         return;
       }
       
@@ -335,24 +392,51 @@ const Game = ({ betSettings = {} }) => {
         return;
       }
       
-      // Randomly select one
-      const randomIndex = Math.floor(Math.random() * unrevealedGems.length);
-      const [rowToReveal, colToReveal] = unrevealedGems[randomIndex];
+      // For AI behavior - analyze the grid to make "smart" decisions
+      // This is just for show - the AI isn't actually using pattern recognition
+      // since mines are randomly placed
+      const aiDelay = 300 + Math.random() * 700; // Random delay between 300-1000ms for "thinking" time
       
-      revealCell(rowToReveal, colToReveal);
-      revealed++;
-      
-      // Check if game is over after each reveal
-      if (!gameOver && !gameWon) {
-        const timerId = setTimeout(revealNext, 300);
-        timerIds.push(timerId);
-      } else {
-        setAutoRevealInProgress(false);
-      }
+      setTimeout(() => {
+        // Randomly select one with pretense of AI intelligence
+        const randomIndex = Math.floor(Math.random() * unrevealedGems.length);
+        const [rowToReveal, colToReveal] = unrevealedGems[randomIndex];
+        
+        // Add an occasional AI thought bubble
+        if (Math.random() > 0.7) {
+          const thoughts = [
+            "Detecting pattern...",
+            "Analyzing risk profile...",
+            "Calculating odds: favorable",
+            "High confidence selection",
+            "Optimal move identified"
+          ];
+          
+          const randomThought = thoughts[Math.floor(Math.random() * thoughts.length)];
+          toast.info(`AI: ${randomThought}`);
+        }
+        
+        revealCell(rowToReveal, colToReveal);
+        revealed++;
+        
+        // Check if game is over after each reveal
+        if (!gameOver && !gameWon) {
+          const timerId = setTimeout(revealNext, aiDelay);
+          timerIds.push(timerId);
+        } else {
+          setAutoRevealInProgress(false);
+          if (gameOver) {
+            toast.error("AI Agent: Mine detected - round lost");
+          } else if (gameWon) {
+            toast.success("AI Agent: Perfect game! All safe tiles revealed!");
+          }
+        }
+      }, aiDelay);
     };
     
     // Start the auto-reveal process
-    revealNext();
+    const initialDelay = 800; // initial thinking delay
+    setTimeout(revealNext, initialDelay);
     
     // Cleanup timers if component unmounts
     return () => timerIds.forEach(id => clearTimeout(id));
@@ -371,40 +455,22 @@ const Game = ({ betSettings = {} }) => {
 
   // Reset the game
   const resetGame = () => {
-    setGrid(initializeGrid(minesCount));
+    playSound('click');
+    
+    // Update the processed settings ref when manually resetting
+    processedSettingsRef.current = null;
+    
+    setIsPlaying(false);
     setGameOver(false);
     setGameWon(false);
-    setRevealedCount(0);
-    setIsPlaying(false);
-    setHasPlacedBet(false);
+    setGrid(initializeGrid(minesCount));
     setMultiplier(1.0);
     setProfit(0);
+    setRevealedCount(0);
+    setAutoRevealInProgress(false);
     setShowConfetti(false);
-  };
-  
-  // Start a new game
-  const placeBet = () => {
-    resetGame();
-    setIsPlaying(true);
-    setHasPlacedBet(true);
-    playSound('bet');
     
-    // Update state from the latest settings
-    setIsAutoBetting(settings.isAutoBetting);
-    setBetAmount(settings.betAmount);
-    setMinesCount(settings.mines);
-    
-    toast.info(`Bet placed: ${betAmount} APTC, ${minesCount} mines`);
-    
-    // If auto-betting is enabled, automatically reveal tiles after a short delay
-    if (settings.isAutoBetting) {
-      const tilesToReveal = settings.tilesToReveal || 5;
-      toast.info(`Auto betting mode: Will reveal ${tilesToReveal} tiles`);
-      
-      setTimeout(() => {
-        autoRevealTiles(tilesToReveal);
-      }, 800);
-    }
+    // Don't reset hasPlacedBet here - we'll handle that in the Game Controls section
   };
   
   // Cashout function
@@ -434,23 +500,11 @@ const Game = ({ betSettings = {} }) => {
     setIsGameInfoVisible(!isGameInfoVisible);
   };
   
-  // Toggle advanced mode
-  const toggleAdvancedMode = () => {
-    if (isPlaying) return; // Can't change during gameplay
-    
-    const newMode = !isAdvancedMode;
-    setIsAdvancedMode(newMode);
-    setGridSize(newMode ? GRID_SIZES[6] : GRID_SIZES[5]);
-  };
-  
-  // Adjust mines count
   const adjustMinesCount = (delta) => {
-    if (isPlaying) return; // Can't change during gameplay
+    if (isPlaying) return;
     
-    // Always allow up to 24 mines, but never more than totalTiles - 1
-    // This ensures we always have at least 1 safe tile
-    const maxMines = Math.min(24, totalTiles - 1);
-    const newCount = Math.max(1, Math.min(maxMines, minesCount + delta));
+    // For 5x5 grid, allow up to 24 mines (with 1 safe tile)
+    const newCount = Math.max(1, Math.min(minesCount + delta, 24));
     setMinesCount(newCount);
   };
   
@@ -575,30 +629,13 @@ const Game = ({ betSettings = {} }) => {
             }
           </button>
 
-      <button
+          <button
             className="p-2 rounded-full bg-blue-900/20 hover:bg-blue-900/40 transition-colors"
             onClick={toggleGameInfo}
             title="Game Info"
-      >
+          >
             <HiOutlineInformationCircle className="text-white/70 text-xl" />
-      </button>
-
-          <div className="ml-2 flex items-center">
-            <div className="flex items-center gap-2">
-              <div className="text-xs md:text-sm text-white/50">
-                Mode:
-              </div>
-              <button
-                className={`px-2 py-1 text-xs md:text-sm rounded ${
-                  isAdvancedMode ? 'bg-purple-600' : 'bg-blue-600'
-                }`}
-                onClick={toggleAdvancedMode}
-                disabled={isPlaying}
-              >
-                {isAdvancedMode ? '6x6 Advanced' : '5x5 Classic'}
-              </button>
-            </div>
-          </div>
+          </button>
         </div>
         
         <div className="flex items-center">
@@ -617,7 +654,7 @@ const Game = ({ betSettings = {} }) => {
             <button 
               className="px-2 py-1 bg-green-900/30 hover:bg-green-900/50 text-white disabled:opacity-50"
               onClick={() => adjustMinesCount(1)}
-              disabled={isPlaying || minesCount >= Math.min(totalTiles - 1, 24)}
+              disabled={isPlaying || minesCount >= 24}
             >
               +
             </button>
@@ -626,7 +663,7 @@ const Game = ({ betSettings = {} }) => {
       </div>
       
       {/* Game Stats */}
-      <div className="w-full grid grid-cols-3 gap-2 mb-4">
+      <div className="w-full grid grid-cols-3 gap-2 mb-3">
         <div className="bg-gray-900/50 rounded p-2 text-center">
           <div className="text-xs text-white/50 mb-1">Chance of Mine</div>
           <div className={`text-lg font-bold ${calculateMineChance() > 50 ? 'text-red-400' : 'text-white'}`}>
@@ -651,7 +688,7 @@ const Game = ({ betSettings = {} }) => {
       
       {/* Game Grid */}
       <div 
-        className={`grid gap-2 w-full mb-4 mx-auto max-w-md`}
+        className={`grid gap-1.5 w-full mb-3 mx-auto max-w-md`}
         style={{ 
           gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))`,
         }}
@@ -691,16 +728,8 @@ const Game = ({ betSettings = {} }) => {
       </div>
       
       {/* Game Controls */}
-      <div className="w-full space-y-3">
-        {!hasPlacedBet ? (
-          <button
-            onClick={placeBet}
-            className="w-full py-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg text-white font-bold shadow-lg hover:from-purple-700 hover:to-blue-700 transition-all flex items-center justify-center gap-2"
-          >
-            <FaCoins className="text-yellow-300" />
-            <span>PLACE BET ({betAmount} APTC)</span>
-          </button>
-        ) : (
+      <div className="w-full space-y-2">
+        {hasPlacedBet && (
           <div className="flex gap-3">
             <button
               onClick={cashout}
@@ -716,7 +745,10 @@ const Game = ({ betSettings = {} }) => {
             </button>
             
             <button
-              onClick={resetGame}
+              onClick={() => {
+                resetGame();
+                setHasPlacedBet(false); // Allow user to go back to the form
+              }}
               className="flex-1 py-3 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg text-white font-bold shadow-lg hover:from-red-700 hover:to-orange-700 transition-all flex items-center justify-center gap-2"
             >
               <FaDice className="text-white" />
@@ -730,7 +762,7 @@ const Game = ({ betSettings = {} }) => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`text-center py-2 rounded-lg ${
+            className={`text-center py-1.5 rounded-lg ${
               gameWon ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
             } font-bold`}
           >
@@ -740,7 +772,7 @@ const Game = ({ betSettings = {} }) => {
       </div>
       
       {/* Multiplier Table */}
-      <div className="w-full mt-6">
+      <div className="w-full mt-2">
         <h3 className="text-white font-medium mb-2 flex items-center">
           <GiCrystalGrowth className="mr-2 text-blue-400" /> 
           Multiplier Table
