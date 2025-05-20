@@ -50,6 +50,7 @@
   - Rebar Data - Data platform for Bitcoin metrics
   - BIP300 - Sidechain technology from LayerTwo Labs
   - Alkanes - Smart contract platform for Bitcoin
+  - Lightning Network - Layer 2 payment protocol for instant micropayments
 
 - **Web3 Infrastructure**
   - Sign-In with Ethereum (SIWE) - Authentication protocol

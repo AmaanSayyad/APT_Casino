@@ -59,6 +59,13 @@ We used LayerTwo Labs' P2P sidechain technology to create:
 - Scaling capabilities to support thousands of concurrent players
 - Cross-chain asset movement for seamless user experience
 
+**Lightning Network Integration**:
+We implemented Bitcoin's Lightning Network to enable:
+- Instant micropayments for gameplay rewards and user interactions
+- Extremely low transaction fees for small-value gaming actions
+- Innovative streaming payment capabilities for continuous rewards
+- Real-time tipping between players during gameplay sessions
+
 ### Game Mechanics
 
 1. **Connect Wallet**: Players connect their Bitcoin wallet to start playing

@@ -1,0 +1,75 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g opacity="0.3">
+    <!-- Circuit lines -->
+    <path d="M50 30C50 18.9543 58.9543 10 70 10H90V50H50V30Z" stroke="#F7931A" stroke-width="1"/>
+    <path d="M90 10H210V50H90V10Z" stroke="#F7931A" stroke-width="1"/>
+    <path d="M210 10H230C241.046 10 250 18.9543 250 30V50H210V10Z" stroke="#F7931A" stroke-width="1"/>
+    
+    <path d="M50 50V120H10V140H50V250H10V270C10 281.046 18.9543 290 30 290H50V250" stroke="#F7931A" stroke-width="1"/>
+    <path d="M50 120V140" stroke="#F7931A" stroke-width="1"/>
+    
+    <path d="M90 50V90H130V130H90V170H130V210H90V250" stroke="#F7931A" stroke-width="1"/>
+    <path d="M130 90H170V130H130" stroke="#F7931A" stroke-width="1"/>
+    <path d="M130 170H170V210H130" stroke="#F7931A" stroke-width="1"/>
+    
+    <path d="M170 90H210V130H170" stroke="#F7931A" stroke-width="1"/>
+    <path d="M170 170H210V210H170" stroke="#F7931A" stroke-width="1"/>
+    
+    <path d="M210 50V90" stroke="#F7931A" stroke-width="1"/>
+    <path d="M210 130V170" stroke="#F7931A" stroke-width="1"/>
+    <path d="M210 210V250" stroke="#F7931A" stroke-width="1"/>
+    
+    <path d="M250 50V90H290V110C290 121.046 281.046 130 270 130H250V170H290V190C290 201.046 281.046 210 270 210H250V250" stroke="#F7931A" stroke-width="1"/>
+    
+    <path d="M50 250H90" stroke="#F7931A" stroke-width="1"/>
+    <path d="M90 250H210" stroke="#F7931A" stroke-width="1"/>
+    <path d="M210 250H250" stroke="#F7931A" stroke-width="1"/>
+    
+    <path d="M50 290V250" stroke="#F7931A" stroke-width="1"/>
+    <path d="M90 290V250" stroke="#F7931A" stroke-width="1"/>
+    <path d="M210 290V250" stroke="#F7931A" stroke-width="1"/>
+    <path d="M250 290V250" stroke="#F7931A" stroke-width="1"/>
+    
+    <path d="M50 290H90" stroke="#F7931A" stroke-width="1"/>
+    <path d="M90 290H210" stroke="#F7931A" stroke-width="1"/>
+    <path d="M210 290H250" stroke="#F7931A" stroke-width="1"/>
+    
+    <!-- Lightning bolts -->
+    <path d="M75 75L65 95H80L70 115" stroke="#FFCC00" stroke-width="2"/>
+    <path d="M190 190L180 210H195L185 230" stroke="#FFCC00" stroke-width="2"/>
+    <path d="M230 70L220 90H235L225 110" stroke="#FFCC00" stroke-width="2"/>
+    
+    <!-- Connection points -->
+    <circle cx="50" cy="50" r="4" fill="#F7931A"/>
+    <circle cx="90" cy="50" r="4" fill="#F7931A"/>
+    <circle cx="130" cy="90" r="4" fill="#F7931A"/>
+    <circle cx="170" cy="90" r="4" fill="#F7931A"/>
+    <circle cx="210" cy="50" r="4" fill="#F7931A"/>
+    <circle cx="250" cy="50" r="4" fill="#F7931A"/>
+    
+    <circle cx="50" cy="120" r="4" fill="#F7931A"/>
+    <circle cx="90" cy="130" r="4" fill="#F7931A"/>
+    <circle cx="130" cy="130" r="4" fill="#F7931A"/>
+    <circle cx="170" cy="130" r="4" fill="#F7931A"/>
+    <circle cx="210" cy="130" r="4" fill="#F7931A"/>
+    <circle cx="250" cy="130" r="4" fill="#F7931A"/>
+    
+    <circle cx="50" cy="140" r="4" fill="#F7931A"/>
+    <circle cx="90" cy="170" r="4" fill="#F7931A"/>
+    <circle cx="130" cy="170" r="4" fill="#F7931A"/>
+    <circle cx="170" cy="170" r="4" fill="#F7931A"/>
+    <circle cx="210" cy="170" r="4" fill="#F7931A"/>
+    <circle cx="250" cy="170" r="4" fill="#F7931A"/>
+    
+    <circle cx="90" cy="210" r="4" fill="#F7931A"/>
+    <circle cx="130" cy="210" r="4" fill="#F7931A"/>
+    <circle cx="170" cy="210" r="4" fill="#F7931A"/>
+    <circle cx="210" cy="210" r="4" fill="#F7931A"/>
+    <circle cx="250" cy="210" r="4" fill="#F7931A"/>
+    
+    <circle cx="50" cy="250" r="4" fill="#F7931A"/>
+    <circle cx="90" cy="250" r="4" fill="#F7931A"/>
+    <circle cx="210" cy="250" r="4" fill="#F7931A"/>
+    <circle cx="250" cy="250" r="4" fill="#F7931A"/>
+  </g>
+</svg> 

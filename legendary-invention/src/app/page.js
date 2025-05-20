@@ -14,6 +14,7 @@ import SBTCIntegration from "@/components/SBTCIntegration";
 import RebarShieldIntegration from "@/components/RebarShieldIntegration";
 import RebarDataAnalytics from "@/components/RebarDataAnalytics";
 import BIP300Integration from "@/components/BIP300Integration";
+import LightningNetworkVisualizer from "@/components/LightningNetworkVisualizer";
 import { useState, useEffect } from "react";
 
 export default function Home() {
@@ -38,6 +39,7 @@ export default function Home() {
           <RebarShieldIntegration />
           <RebarDataAnalytics />
           <BIP300Integration />
+          <LightningNetworkVisualizer />
         </>
       )}
       
