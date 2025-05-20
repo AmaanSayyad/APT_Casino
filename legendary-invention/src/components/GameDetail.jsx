@@ -28,18 +28,100 @@ const YouTubeVideo = ({ videoUrl }) => {
   if (!videoUrl) return null;
   
   return (
-    <Box sx={{ 
-      position: 'relative',
-      width: { xs: '95%', sm: '80%', md: '70%' },
-      maxWidth: '750px',
-      mx: 'auto',
-      paddingTop: { xs: '53.25%', sm: '45%', md: '39.375%' },
-      mb: 6,
-      borderRadius: '16px',
-      overflow: 'hidden',
-      boxShadow: '0 15px 35px rgba(0, 0, 0, 0.5)',
-      border: '1px solid rgba(104, 29, 219, 0.3)',
-    }}>
+    <Box
+      sx={{
+        position: 'relative',
+        width: { xs: '95%', sm: '85%', md: '75%' },
+        maxWidth: '800px',
+        mx: 'auto',
+        paddingTop: { xs: '53.25%', sm: '47.5%', md: '42%' },
+        mb: 6,
+        borderRadius: '16px',
+        overflow: 'hidden',
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.6)',
+        border: '2px solid rgba(104, 29, 219, 0.4)',
+        transition: 'all 0.3s ease-in-out',
+        '&:hover': {
+          transform: 'scale(1.02)',
+          boxShadow: '0 25px 50px rgba(0, 0, 0, 0.7)',
+          border: '2px solid rgba(216, 38, 51, 0.5)',
+        },
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: '-3px',
+          left: '-3px',
+          right: '-3px',
+          bottom: '-3px',
+          borderRadius: '20px',
+          background: 'linear-gradient(45deg, #d82633, #681DDB, #14D854, #d82633)',
+          backgroundSize: '400% 400%',
+          zIndex: -1,
+          filter: 'blur(10px)',
+          opacity: 0.7,
+          animation: 'gradient 15s ease infinite',
+          '@keyframes gradient': {
+            '0%': { backgroundPosition: '0% 50%' },
+            '50%': { backgroundPosition: '100% 50%' },
+            '100%': { backgroundPosition: '0% 50%' }
+          }
+        },
+        '&::after': {
+          content: '""',
+          position: 'absolute',
+          inset: 0,
+          borderRadius: '16px',
+          padding: '2px',
+          background: 'linear-gradient(45deg, #d82633, #681DDB, #14D854, #d82633)',
+          backgroundSize: '400% 400%',
+          mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+          maskComposite: 'exclude', 
+          WebkitMaskComposite: 'xor',
+          pointerEvents: 'none',
+          animation: 'gradient 15s ease infinite',
+        }
+      }}
+    >
+      <Box
+        sx={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url("/images/casino-texture.jpg"), linear-gradient(135deg, #140009 0%, #200010 100%)`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.1,
+          zIndex: 0
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          py: 1.5,
+          background: 'linear-gradient(to bottom, rgba(9, 0, 5, 0.8), rgba(9, 0, 5, 0))',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 2
+        }}
+      >
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            color: 'white', 
+            fontWeight: 'bold',
+            textShadow: '0 2px 4px rgba(0,0,0,0.5)',
+            letterSpacing: '1px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1
+          }}
+        >
+          <FaPlayCircle /> Roulette Masterclass
+        </Typography>
+      </Box>
       <iframe
         style={{
           position: 'absolute',
@@ -47,10 +129,11 @@ const YouTubeVideo = ({ videoUrl }) => {
           left: 0,
           width: '100%',
           height: '100%',
-          border: 'none'
+          border: 'none',
+          zIndex: 1
         }}
         src={videoUrl}
-        title="Game Tutorial"
+        title="Roulette Masterclass Tutorial"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
       />
@@ -111,20 +194,22 @@ const GameDetail = ({ gameData = {}, bettingTableData = {}, showBettingTable = t
     <Box
       id="game-details"
       sx={{
-        py: 10,
+        py: { xs: 8, md: 10 },
         px: { xs: 3, md: 8 },
         backgroundColor: '#090005',
+        backgroundImage: `url("/images/casino-texture.jpg"), linear-gradient(135deg, #140009 0%, #200010 100%)`,
+        backgroundBlendMode: 'overlay',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         borderRadius: '24px',
-        border: '1px solid rgba(104, 29, 219, 0.25)',
+        border: '1px solid rgba(104, 29, 219, 0.35)',
         position: 'relative',
         overflow: 'hidden',
         backdropFilter: 'blur(15px)',
         boxShadow: '0 25px 60px rgba(0, 0, 0, 0.5)',
         mt: 8,
         mb: 8,
-        transition: 'transform 0.3s ease-out, box-shadow 0.3s ease-out',
-        backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23140009\' fill-opacity=\'0.15\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
-        backgroundBlendMode: 'soft-light',
+        transition: 'all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)',
         '&:hover': {
           boxShadow: '0 30px 70px rgba(0, 0, 0, 0.6)',
           transform: 'translateY(-5px)'
@@ -136,16 +221,29 @@ const GameDetail = ({ gameData = {}, bettingTableData = {}, showBettingTable = t
           left: '-5px',
           right: '-5px',
           bottom: '-5px',
-          background: 'linear-gradient(125deg, rgba(9, 0, 5, 0.4), rgba(9, 0, 5, 0.4), rgba(9, 0, 5, 0.4))',
+          background: 'linear-gradient(125deg, rgba(216, 38, 51, 0.4), rgba(104, 29, 219, 0.4), rgba(20, 216, 84, 0.4))',
+          backgroundSize: '300% 300%',
           zIndex: -1,
           filter: 'blur(20px)',
-          opacity: 0.7,
-          animation: 'bgPulse 15s ease-in-out infinite alternate',
-          '@keyframes bgPulse': {
-            '0%': { opacity: 0.5, transform: 'scale(0.98)' },
-            '50%': { opacity: 0.7, transform: 'scale(1.02)' },
-            '100%': { opacity: 0.5, transform: 'scale(0.98)' }
+          opacity: 0.5,
+          animation: 'gradientBg 15s ease infinite',
+          '@keyframes gradientBg': {
+            '0%': { backgroundPosition: '0% 50%', opacity: 0.3 },
+            '50%': { backgroundPosition: '100% 50%', opacity: 0.5 },
+            '100%': { backgroundPosition: '0% 50%', opacity: 0.3 }
           }
+        },
+        // Highlight top border with gradient
+        '&::after': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: '5%',
+          right: '5%',
+          height: '3px',
+          background: 'linear-gradient(90deg, transparent, #d82633, #681DDB, #d82633, transparent)',
+          opacity: 0.8,
+          zIndex: 1
         }
       }}
     >
@@ -240,490 +338,62 @@ const GameDetail = ({ gameData = {}, bettingTableData = {}, showBettingTable = t
               )}
               
               {/* Game description paragraphs */}
-              {gameData.paragraphs && gameData.paragraphs.map((paragraph, index) => (
+              <Box
+                sx={{
+                  background: 'linear-gradient(135deg, rgba(9, 0, 5, 0.6) 0%, rgba(9, 0, 5, 0.3) 100%)',
+                  backdropFilter: 'blur(10px)',
+                  borderRadius: '16px',
+                  p: { xs: 3, md: 4 },
+                  mb: 4,
+                  border: '1px solid rgba(104, 29, 219, 0.2)',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '5px',
+                    height: '100%',
+                    background: 'linear-gradient(to bottom, #d82633, #681DDB)',
+                  }
+                }}
+              >
                 <Typography 
-                  key={index} 
-                  variant="body1" 
-                  color="white" 
+                  variant="h5" 
                   sx={{ 
-                    mb: 3.5,
-                    lineHeight: 1.95,
-                    fontSize: '1.05rem',
-                    color: 'rgba(255, 255, 255, 0.92)',
-                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
-                    maxWidth: '95%',
-                    mx: 'auto',
-                    textAlign: { xs: 'left', md: 'center' },
-                    letterSpacing: '0.015em',
-                    '&::first-letter': {
-                      fontSize: '1.4em',
-                      fontWeight: 500,
-                      color: '#ffffff',
-                    }
+                    mb: 3,
+                    fontWeight: 'bold',
+                    background: 'linear-gradient(90deg, #FFFFFF, #FFA500)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    display: 'inline-block'
                   }}
                 >
-                  {paragraph}
+                  About {gameData.title || 'Game'}
                 </Typography>
-              ))}
-              
-              {/* Game content sections */}
-              {gameData.sections && (
-                <Grid container spacing={4} sx={{ mt: 4 }}>
-                  {gameData.sections.map((section, index) => (
-                    <Grid item xs={12} md={6} key={index}>
-                      <Paper 
-                        elevation={5}
-                        sx={{
-                          p: 4,
-                          height: '100%',
-                          borderRadius: 3,
-                          backgroundColor: 'rgba(9, 0, 5, 0.75)',
-                          backdropFilter: 'blur(10px)',
-                          border: '1px solid rgba(104, 29, 219, 0.2)',
-                          transition: 'all 0.4s ease',
-                          position: 'relative',
-                          overflow: 'hidden',
-                          backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0h20L0 20z\' fill=\'%23140009\' fill-opacity=\'0.1\' fill-rule=\'evenodd\'/%3E%3C/svg%3E")',
-                          backgroundSize: '20px 20px',
-                          '&::before': {
-                            content: '""',
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            background: 'linear-gradient(125deg, rgba(9, 0, 5, 0.05) 0%, rgba(9, 0, 5, 0.05) 50%, rgba(9, 0, 5, 0.05) 100%)',
-                            opacity: 0,
-                            transition: 'opacity 0.3s ease',
-                          },
-                          '&:hover': {
-                            backgroundColor: 'rgba(9, 0, 5, 0.85)',
-                            transform: 'translateY(-6px)',
-                            boxShadow: '0 15px 30px rgba(0, 0, 0, 0.4)',
-                            '&::before': {
-                              opacity: 1,
-                            }
-                          }
-                        }}
-                      >
-                        <Typography 
-                          variant="h6" 
-                          fontWeight="bold" 
-                          color="#d82633" 
-                          gutterBottom
-                          sx={{ 
-                            borderBottom: '1px solid rgba(104, 29, 219, 0.3)',
-                            pb: 1.5,
-                            mb: 2.5
-                          }}
-                        >
-                          {section.title}
-                        </Typography>
-                        <Typography 
-                          variant="body2" 
-                          color="rgba(255, 255, 255, 0.9)"
-                          sx={{ lineHeight: 1.8 }}
-                        >
-                          {section.content}
-                        </Typography>
-                      </Paper>
-                    </Grid>
-                  ))}
-                </Grid>
-              )}
+                
+                {gameData.paragraphs && gameData.paragraphs.map((paragraph, index) => (
+                  <Typography 
+                    key={index} 
+                    variant="body1" 
+                    sx={{ 
+                      mb: 2.5,
+                      lineHeight: 1.95,
+                      fontSize: '1.05rem',
+                      color: 'rgba(255, 255, 255, 0.92)',
+                      textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+                      position: 'relative',
+                      pl: index === 0 ? 0 : 2,
+                      borderLeft: index === 0 ? 'none' : '1px solid rgba(255,255,255,0.1)',
+                    }}
+                  >
+                    {paragraph}
+                  </Typography>
+                ))}
+              </Box>
             </Box>
-            
-            {/* Enhanced Game Statistics */}
-            {showBettingTable && (
-              <Paper 
-                elevation={5}
-                sx={{
-                  p: 4,
-                  borderRadius: 3,
-                  backgroundColor: 'rgba(9, 0, 5, 0.8)',
-                  backdropFilter: 'blur(15px)',
-                  border: '1px solid rgba(104, 29, 219, 0.2)',
-                  mb: 5,
-                  boxShadow: '0 15px 35px rgba(0, 0, 0, 0.3)',
-                  transition: 'all 0.4s ease',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23140009\' fill-opacity=\'0.15\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'2\'/%3E%3C/g%3E%3C/svg%3E")',
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    left: -250,
-                    width: '70%',
-                    height: '100%',
-                    background: 'linear-gradient(90deg, transparent, rgba(9, 0, 5, 0.3), transparent)',
-                    transform: 'skewX(-15deg)',
-                    animation: 'shimmer 8s ease-in-out infinite',
-                    '@keyframes shimmer': {
-                      '0%': { left: '-80%' },
-                      '100%': { left: '180%' }
-                    }
-                  },
-                  '&:hover': {
-                    transform: 'translateY(-5px)',
-                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
-                  }
-                }}
-              >
-                <Typography 
-                  variant="h5" 
-                  fontWeight="bold" 
-                  color="#d82633" 
-                  gutterBottom
-                  sx={{ 
-                    borderBottom: '1px solid rgba(104, 29, 219, 0.3)',
-                    pb: 1.5,
-                    pt: 2.5,
-                    px: 4,
-                    mb: 3,
-                    display: 'flex',
-                    alignItems: 'center',
-                    fontFamily: "'Playfair Display', serif",
-                    letterSpacing: '0.03em',
-                    fontSize: '1.6rem'
-                  }}
-                >
-                  <FaChartLine color="#681DDB" size={22} style={{ marginRight: '10px' }} />
-                  Game Statistics
-                </Typography>
-                <Grid container spacing={4} sx={{ mt: 1, px: 4, pb: 4 }}>
-                  <Grid item xs={6} sm={3}>
-                    <Box sx={{ 
-                      textAlign: 'center', 
-                      padding: 3, 
-                      backgroundColor: 'rgba(9, 0, 5, 0.7)', 
-                      borderRadius: 2,
-                      border: '1px solid rgba(104, 29, 219, 0.2)',
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      transition: 'all 0.4s ease',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'4\' height=\'4\' viewBox=\'0 0 4 4\'%3E%3Cpath fill=\'%23140009\' fill-opacity=\'0.2\' d=\'M1 3h1v1H1V3zm2-2h1v1H3V1z\'%3E%3C/path%3E%3C/svg%3E")',
-                      '&::after': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        background: 'radial-gradient(circle at center, rgba(9, 0, 5, 0.25), transparent 70%)',
-                        opacity: 0,
-                        transition: 'opacity 0.3s ease',
-                      },
-                      '&:hover': {
-                        backgroundColor: 'rgba(10, 0, 5, 0.7)',
-                        transform: 'translateY(-5px) scale(1.03)',
-                        boxShadow: '0 10px 20px rgba(0, 0, 0, 0.3)',
-                        '&::after': {
-                          opacity: 1
-                        }
-                      }
-                    }}>
-                      <FaChartBar color="#681DDB" size={30} style={{ marginBottom: '12px' }} />
-                      <Typography variant="body2" color="rgba(255, 255, 255, 0.7)" gutterBottom>
-                        Total Bets
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold" color="white" sx={{ mt: 1 }}>
-                        {gameStatistics.totalBets}
-                      </Typography>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={6} sm={3}>
-                    <Box sx={{ 
-                      textAlign: 'center', 
-                      padding: 3, 
-                      backgroundColor: 'rgba(9, 0, 5, 0.7)', 
-                      borderRadius: 2,
-                      border: '1px solid rgba(216, 38, 51, 0.2)',
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      transition: 'all 0.4s ease',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'4\' height=\'4\' viewBox=\'0 0 4 4\'%3E%3Cpath fill=\'%23140009\' fill-opacity=\'0.2\' d=\'M1 3h1v1H1V3zm2-2h1v1H3V1z\'%3E%3C/path%3E%3C/svg%3E")',
-                      '&::after': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        background: 'radial-gradient(circle at center, rgba(9, 0, 5, 0.25), transparent 70%)',
-                        opacity: 0,
-                        transition: 'opacity 0.3s ease',
-                      },
-                      '&:hover': {
-                        backgroundColor: 'rgba(10, 0, 5, 0.7)',
-                        transform: 'translateY(-5px) scale(1.03)',
-                        boxShadow: '0 10px 20px rgba(0, 0, 0, 0.3)',
-                        '&::after': {
-                          opacity: 1
-                        }
-                      }
-                    }}>
-                      <FaCoins color="#D82633" size={30} style={{ marginBottom: '12px' }} />
-                      <Typography variant="body2" color="rgba(255, 255, 255, 0.7)" gutterBottom>
-                        Volume
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold" color="white" sx={{ mt: 1 }}>
-                        {gameStatistics.totalVolume}
-                      </Typography>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={6} sm={3}>
-                    <Box sx={{ 
-                      textAlign: 'center', 
-                      padding: 3, 
-                      backgroundColor: 'rgba(9, 0, 5, 0.7)', 
-                      borderRadius: 2,
-                      border: '1px solid rgba(20, 216, 84, 0.2)',
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      transition: 'all 0.4s ease',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'4\' height=\'4\' viewBox=\'0 0 4 4\'%3E%3Cpath fill=\'%23140009\' fill-opacity=\'0.2\' d=\'M1 3h1v1H1V3zm2-2h1v1H3V1z\'%3E%3C/path%3E%3C/svg%3E")',
-                      '&::after': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        background: 'radial-gradient(circle at center, rgba(9, 0, 5, 0.25), transparent 70%)',
-                        opacity: 0,
-                        transition: 'opacity 0.3s ease',
-                      },
-                      '&:hover': {
-                        backgroundColor: 'rgba(10, 0, 5, 0.7)',
-                        transform: 'translateY(-5px) scale(1.03)',
-                        boxShadow: '0 10px 20px rgba(0, 0, 0, 0.3)',
-                        '&::after': {
-                          opacity: 1
-                        }
-                      }
-                    }}>
-                      <FaFire color="#14D854" size={30} style={{ marginBottom: '12px' }} />
-                      <Typography variant="body2" color="rgba(255, 255, 255, 0.7)" gutterBottom>
-                        Avg Bet
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold" color="white" sx={{ mt: 1 }}>
-                        {gameStatistics.avgBetSize}
-                      </Typography>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={6} sm={3}>
-                    <Box sx={{ 
-                      textAlign: 'center', 
-                      padding: 3, 
-                      backgroundColor: 'rgba(9, 0, 5, 0.7)', 
-                      borderRadius: 2,
-                      border: '1px solid rgba(104, 29, 219, 0.2)',
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      transition: 'all 0.4s ease',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'4\' height=\'4\' viewBox=\'0 0 4 4\'%3E%3Cpath fill=\'%23140009\' fill-opacity=\'0.2\' d=\'M1 3h1v1H1V3zm2-2h1v1H3V1z\'%3E%3C/path%3E%3C/svg%3E")',
-                      '&::after': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        background: 'radial-gradient(circle at center, rgba(9, 0, 5, 0.25), transparent 70%)',
-                        opacity: 0,
-                        transition: 'opacity 0.3s ease',
-                      },
-                      '&:hover': {
-                        backgroundColor: 'rgba(10, 0, 5, 0.7)',
-                        transform: 'translateY(-5px) scale(1.03)',
-                        boxShadow: '0 10px 20px rgba(0, 0, 0, 0.3)',
-                        '&::after': {
-                          opacity: 1
-                        }
-                      }
-                    }}>
-                      <FaTrophy color="#fdcb6e" size={30} style={{ marginBottom: '12px' }} />
-                      <Typography variant="body2" color="rgba(255, 255, 255, 0.7)" gutterBottom>
-                        Max Win
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold" color="white" sx={{ mt: 1 }}>
-                        {gameStatistics.maxWin}
-                      </Typography>
-                    </Box>
-                  </Grid>
-                </Grid>
-              </Paper>
-            )}
-            
-            {/* Enhanced Recent Big Wins */}
-            {showBettingTable && (
-              <Paper 
-                elevation={5}
-                sx={{
-                  p: 4,
-                  borderRadius: 3,
-                  backgroundColor: 'rgba(9, 0, 5, 0.8)',
-                  backdropFilter: 'blur(15px)',
-                  border: '1px solid rgba(104, 29, 219, 0.2)',
-                  boxShadow: '0 15px 35px rgba(0, 0, 0, 0.3)',
-                  transition: 'all 0.4s ease',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'12\' viewBox=\'0 0 40 12\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 6.172L6.172 0h5.656L0 11.828V6.172zm40 5.656L28.172 0h5.656L40 6.172v5.656zM6.172 12l12-12h3.656l12 12h-5.656L20 3.828 11.828 12H6.172zm12 0L20 10.172 21.828 12h-3.656z\' fill=\'%23140009\' fill-opacity=\'0.15\' fill-rule=\'evenodd\'/%3E%3C/svg%3E")',
-                  backgroundSize: '40px 12px',
-                  backgroundPosition: 'bottom center',
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    left: -250,
-                    width: '70%',
-                    height: '100%',
-                    background: 'linear-gradient(90deg, transparent, rgba(9, 0, 5, 0.3), transparent)',
-                    transform: 'skewX(-15deg)',
-                    animation: 'shimmer2 8s ease-in-out infinite',
-                    '@keyframes shimmer2': {
-                      '0%': { left: '-80%' },
-                      '100%': { left: '180%' }
-                    },
-                    animationDelay: '2s'
-                  },
-                  '&:hover': {
-                    transform: 'translateY(-5px)',
-                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
-                  }
-                }}
-              >
-                <Typography 
-                  variant="h5" 
-                  fontWeight="bold" 
-                  color="#d82633" 
-                  gutterBottom
-                  sx={{ 
-                    borderBottom: '1px solid rgba(104, 29, 219, 0.3)',
-                    pb: 1.5,
-                    pt: 2.5,
-                    px: 4,
-                    mb: 3,
-                    display: 'flex',
-                    alignItems: 'center',
-                    fontFamily: "'Playfair Display', serif",
-                    letterSpacing: '0.03em',
-                    fontSize: '1.6rem'
-                  }}
-                >
-                  <FaFire color="#D82633" size={22} style={{ marginRight: '10px' }} />
-                  Recent Big Wins
-                </Typography>
-                <Grid container spacing={3} sx={{ mt: 1, px: 4, pb: 4 }}>
-                  {recentBigWins.map((win, index) => (
-                    <Grid item xs={12} sm={4} key={index}>
-                      <Paper 
-                        elevation={3}
-                        sx={{
-                          p: 3,
-                          borderRadius: 2,
-                          backgroundColor: 'rgba(9, 0, 5, 0.7)',
-                          border: '1px solid rgba(104, 29, 219, 0.2)',
-                          transition: 'all 0.4s ease',
-                          position: 'relative',
-                          overflow: 'hidden',
-                          boxShadow: '0 10px 20px rgba(0, 0, 0, 0.25)',
-                          backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'12\' viewBox=\'0 0 40 12\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 6.172L6.172 0h5.656L0 11.828V6.172zm40 5.656L28.172 0h5.656L40 6.172v5.656zM6.172 12l12-12h3.656l12 12h-5.656L20 3.828 11.828 12H6.172zm12 0L20 10.172 21.828 12h-3.656z\' fill=\'%23140009\' fill-opacity=\'0.15\' fill-rule=\'evenodd\'/%3E%3C/svg%3E")',
-                          backgroundSize: '40px 12px',
-                          backgroundPosition: 'bottom center',
-                          '&::before': {
-                            content: '""',
-                            position: 'absolute',
-                            top: 0,
-                            right: 0,
-                            bottom: 0,
-                            left: 0,
-                            opacity: 0,
-                            transition: 'opacity 0.3s ease',
-                            background: 'linear-gradient(125deg, rgba(9, 0, 5, 0.1), rgba(9, 0, 5, 0.1))',
-                          },
-                          '&:hover': {
-                            backgroundColor: 'rgba(9, 0, 5, 0.8)',
-                            transform: 'translateY(-6px) scale(1.02)',
-                            boxShadow: '0 15px 30px rgba(0, 0, 0, 0.4)',
-                            '&::before': {
-                              opacity: 1
-                            }
-                          }
-                        }}
-                      >
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
-                          <Typography variant="body1" color="rgba(255, 255, 255, 0.9)" fontWeight="medium">
-                            {win.player}
-                          </Typography>
-                          <Typography variant="body2" color="rgba(255, 255, 255, 0.6)" sx={{ display: 'flex', alignItems: 'center' }}>
-                            <FaClock size={12} style={{ marginRight: '5px' }} />
-                            {win.time}
-                          </Typography>
-                        </Box>
-                        <Typography 
-                          variant="h5" 
-                          fontWeight="bold" 
-                          sx={{ 
-                            mb: 1.5,
-                            background: 'linear-gradient(90deg, #090005, #090005)',
-                            backgroundClip: 'text',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            textShadow: '0 2px 10px rgba(104, 29, 219, 0.3)',
-                            display: 'inline-block',
-                            position: 'relative'
-                          }}
-                        >
-                          {win.amount}
-                        </Typography>
-                        <Box 
-                          sx={{ 
-                            display: 'inline-block',
-                            backgroundColor: 'rgba(20, 216, 84, 0.1)',
-                            borderRadius: '4px',
-                            px: 1.5,
-                            py: 0.5,
-                            border: '1px solid rgba(20, 216, 84, 0.2)',
-                            transition: 'all 0.3s ease',
-                            '&:hover': {
-                              backgroundColor: 'rgba(20, 216, 84, 0.15)',
-                              transform: 'translateY(-2px)'
-                            }
-                          }}
-                        >
-                          <Typography variant="body2" color="rgba(255, 255, 255, 0.8)">
-                            Bet: {win.bet}
-                          </Typography>
-                        </Box>
-                      </Paper>
-                    </Grid>
-                  ))}
-                </Grid>
-              </Paper>
-            )}
           </Grid>
         </Grid>
       </Container>

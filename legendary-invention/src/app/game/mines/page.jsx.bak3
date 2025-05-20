@@ -8,7 +8,6 @@ import GameDetail from "@/components/GameDetail";
 import MinesBettingTable from "./components/MinesBettingTable.jsx";
 import MinesProbability from "./components/MinesProbability.jsx";
 import MinesHistory from "./components/MinesHistory.jsx";
-import MinesLeaderboard from "./components/MinesLeaderboard.jsx";
 import { gameData, bettingTableData, gameStatistics, recentBigWins, winProbabilities } from "./config/gameDetail.jsx";
 import { manualFormConfig, autoFormConfig } from "./config/formConfig.jsx";
 import { FaCrown, FaHistory, FaTrophy, FaInfoCircle, FaChartLine, FaFireAlt, FaBomb, FaDiscord, FaTelegram, FaTwitter, FaDice, FaCoins } from "react-icons/fa";
@@ -361,50 +360,44 @@ export default function Mines() {
                 </button>
               </div>
               
-              <div className="flex flex-col md:flex-row gap-6">
-                <div className="md:w-1/2">
-                  <div className="relative w-full bg-black rounded-lg overflow-hidden shadow-lg shadow-purple-900/30 border border-purple-600/20" style={{ paddingTop: "56.25%" }}>
-                    <iframe 
-                      className="absolute top-0 left-0 w-full h-full"
-                      src="https://www.youtube.com/embed/Aqz5C7GPrvQ?si=9F38e0aJvMv1K2PO" 
-                      title="YouTube video player" 
-                      frameBorder="0" 
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                </div>
-                
-                <div className="md:w-1/2">
-                  <div className="text-white/80 text-sm h-full flex flex-col">
-                    <p className="font-display text-lg text-white mb-3">Quick Tips:</p>
-                    <div className="grid grid-cols-1 gap-3">
-                      <div className="bg-purple-900/20 rounded-lg p-3 border border-purple-800/20 flex items-start">
-                        <div className="mr-2 p-2 bg-purple-800/30 rounded-full text-purple-300">
-                          <FaDice className="text-lg" />
-                        </div>
-                        <p>Start with fewer mines to learn the game mechanics</p>
-                      </div>
-                      <div className="bg-purple-900/20 rounded-lg p-3 border border-purple-800/20 flex items-start">
-                        <div className="mr-2 p-2 bg-purple-800/30 rounded-full text-red-300">
-                          <FaBomb className="text-lg" />
-                        </div>
-                        <p>Higher mine counts increase potential rewards but also risk</p>
-                      </div>
-                      <div className="bg-purple-900/20 rounded-lg p-3 border border-purple-800/20 flex items-start">
-                        <div className="mr-2 p-2 bg-purple-800/30 rounded-full text-green-300">
-                          <FaCoins className="text-lg" />
-                        </div>
-                        <p>The cashout button is your friend - don't get too greedy!</p>
-                      </div>
-                      <div className="bg-purple-900/20 rounded-lg p-3 border border-purple-800/20 flex items-start">
-                        <div className="mr-2 p-2 bg-purple-800/30 rounded-full text-blue-300">
-                          <GiCrystalGrowth className="text-lg" />
-                        </div>
-                        <p>Different strategies work for different risk appetites</p>
-                      </div>
+              <div className="relative w-full mx-auto bg-black rounded-lg overflow-hidden shadow-lg shadow-purple-900/30 border border-purple-600/20" style={{ paddingTop: "56.25%", margin: "-1rem -1rem 0 -1rem", width: "calc(100% + 2rem)" }}>
+                <iframe 
+                  className="absolute top-0 left-0 w-full h-full"
+                  src="https://www.youtube.com/embed/Aqz5C7GPrvQ?si=9F38e0aJvMv1K2PO" 
+                  title="YouTube video player" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                ></iframe>
+              </div>
+              
+              <div className="mt-4 text-white/80 text-sm">
+                <p className="mb-2 font-display text-lg text-white">Quick Tips:</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="bg-purple-900/20 rounded-lg p-3 border border-purple-800/20 flex items-start">
+                    <div className="mr-2 p-2 bg-purple-800/30 rounded-full text-purple-300">
+                      <FaDice className="text-lg" />
                     </div>
+                    <p>Start with fewer mines to learn the game mechanics</p>
+                  </div>
+                  <div className="bg-purple-900/20 rounded-lg p-3 border border-purple-800/20 flex items-start">
+                    <div className="mr-2 p-2 bg-purple-800/30 rounded-full text-red-300">
+                      <FaBomb className="text-lg" />
+                    </div>
+                    <p>Higher mine counts increase potential rewards but also risk</p>
+                  </div>
+                  <div className="bg-purple-900/20 rounded-lg p-3 border border-purple-800/20 flex items-start">
+                    <div className="mr-2 p-2 bg-purple-800/30 rounded-full text-green-300">
+                      <FaCoins className="text-lg" />
+                    </div>
+                    <p>The cashout button is your friend - don't get too greedy!</p>
+                  </div>
+                  <div className="bg-purple-900/20 rounded-lg p-3 border border-purple-800/20 flex items-start">
+                    <div className="mr-2 p-2 bg-purple-800/30 rounded-full text-blue-300">
+                      <GiCrystalGrowth className="text-lg" />
+                    </div>
+                    <p>Different strategies work for different risk appetites</p>
                   </div>
                 </div>
               </div>
@@ -456,16 +449,6 @@ export default function Mines() {
         transition={{ duration: 0.5, delay: 0.3 }}
       >
         {typeof MinesHistory === 'function' && <MinesHistory />}
-      </motion.div>
-      
-      <motion.div 
-        id="leaderboard"
-        className="mt-6 scroll-mt-24"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-      >
-        {typeof MinesLeaderboard === 'function' && <MinesLeaderboard />}
       </motion.div>
       
       {/* Strategy Tips Section */}
